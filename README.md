@@ -1,44 +1,72 @@
-# Node NFT — nodes.garden (Arbitrum Testnet)
+# Node NFT — nodes.garden
 
-This repository contains the **Node NFT** smart contract for nodes.garden.  
-Each node subscription can be represented by an ERC-721 NFT on **Arbitrum Sepolia**, enabling transferability while keeping private node data off-chain.
+This repository contains the Milestone 1 `NodeNFT` smart contract for nodes.garden on Arbitrum Sepolia.
+Each NFT represents a transferable node subscription access right while private node data and subscription lifecycle details remain off-chain.
 
-## What This Contract Does
-- **ERC-721 Node NFT** representing a node subscription.
-- **Operator-controlled minting** (nodes.garden hot wallet).
-- **Subscription extension** via operator updates (after off-chain payment).
-- **On-chain minimal metadata**:
-  - `nodeId` (uint256, DB id)
-  - `nodeType` (uint32, type id)
-  - `subscriptionExpiry` (uint64, unix timestamp)
-- **tokenURI** points to nodes.garden API for dynamic metadata.
-- **Transfer sync event** emitted on ownership transfers for backend indexing.
-- **Burn disabled** in this milestone (stubbed for later).
+## Contract Model
 
-## Off-Chain Design
-Private node data (keys, access credentials, logs) **never** goes on-chain.  
-The NFT acts as a transferable access right; when burn is enabled in a later milestone, it will allow revealing private data from the nodes.garden backend.
+The contract is intentionally minimal:
 
-## Milestone Scope
-This repo is focused on **Milestone 1**:
-- Node NFT contract (testnet deployment)
-- Internal test suite
-- Documentation
+- ERC-721 token with role-gated minting and subscription extension
+- `nodeId` stores the Rails `nodes.id`
+- `nodeType` stores the Rails `project_id`
+- `subscriptionExpiry` stores the current subscription `end_date` as a unix timestamp
+- `tokenURI` resolves to `baseURI + tokenId`
+- `NodeTransferSync` is emitted on transfers for backend indexing
+- burn is intentionally disabled in Milestone 1
 
-Marketplace, mainnet deployment, and burn-to-reveal are **out of scope** for this milestone.
+Tier selection, tariff plans, lifecycle status, pricing, and all private node credentials remain off-chain.
 
-## Security Notes
-- No secrets are stored in the repo.
-- Do not commit private keys or RPC URLs.
-- Use `.env` for local development when needed.
+## Milestone 1 Scope
+
+Included:
+
+- Node NFT contract
+- Foundry test suite
+- Arbitrum Sepolia deployment workflow
+- public reviewer-facing documentation
+
+Out of scope:
+
+- marketplace functionality
+- on-chain payments
+- mainnet deployment
+- burn-to-reveal flows
+- upgradeability
+
+## Repository Guide
+
+- [CONTRACT_SPEC.md](CONTRACT_SPEC.md) defines the canonical contract semantics
+- [API.md](API.md) defines the off-chain metadata API contract
+- [DEPLOYMENT.md](DEPLOYMENT.md) documents deployment and verification
+- [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
 
 ## Tooling
-Built with **Foundry** and **OpenZeppelin Contracts**.
 
-## Basic Commands
+- Foundry
+- OpenZeppelin Contracts
+- GitHub Actions for formatting, build, and tests
+
+## Local Commands
+
+Standard commands:
 
 ```sh
+forge fmt --check
 forge build
 forge test
-forge fmt
 ```
+
+If plain `forge test` crashes locally in some macOS environments, use:
+
+```sh
+forge test --offline --no-auto-detect
+```
+
+The CI workflow uses the standard command path. The offline variant is only a local workaround for environments where Foundry crashes during network-dependent signature lookup.
+
+## Security Notes
+
+- never commit private keys or RPC URLs
+- keep deploy secrets in local environment variables
+- metadata must never expose private keys, access tokens, or internal node data
