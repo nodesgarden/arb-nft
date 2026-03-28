@@ -18,6 +18,14 @@ Deployment and verification inputs:
 - `DEPLOYER_PRIVATE_KEY`
 - `ETHERSCAN_API_KEY`
 
+Post-deploy operation inputs:
+
+- `NFT_CONTRACT`
+- `OPERATOR_PRIVATE_KEY`
+- `OWNER_PRIVATE_KEY`
+- `MINT_BATCH_FILE`
+- `TRANSFER_BATCH_FILE`
+
 ## Suggested Local Export
 
 ```sh
@@ -30,6 +38,12 @@ export OPERATOR_ADDRESS="0x..."
 export NFT_NAME="nodes.garden Node NFT"
 export NFT_SYMBOL="NODE"
 export BASE_URI="https://nodes.garden/api/nft/"
+
+export NFT_CONTRACT="0x..."
+export OPERATOR_PRIVATE_KEY="0x..."
+export OWNER_PRIVATE_KEY="0x..."
+export MINT_BATCH_FILE="script/examples/mint-batch.example.json"
+export TRANSFER_BATCH_FILE="script/examples/transfer-batch.example.json"
 ```
 
 ## Network Details
@@ -94,6 +108,54 @@ Record all of the following in `MILESTONE_1_EVIDENCE.md`:
 - admin address
 - operator address
 - base URI used at deployment
+
+## Batch Mint Workflow
+
+Use the operator wallet for minting. The batch file contains aligned arrays for:
+
+- `recipients`
+- `nodeIds`
+- `nodeTypes`
+- `subscriptionExpiries`
+
+Run:
+
+```sh
+forge script script/MintNodeNFTBatch.s.sol:MintNodeNFTBatch \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+The script reads:
+
+- `NFT_CONTRACT`
+- `OPERATOR_PRIVATE_KEY`
+- `MINT_BATCH_FILE`
+
+## Batch Transfer Workflow
+
+Use the current token owner wallet for each transfer batch. The batch file contains aligned arrays for:
+
+- `recipients`
+- `tokenIds`
+
+Run:
+
+```sh
+forge script script/TransferNodeNFTBatch.s.sol:TransferNodeNFTBatch \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+The script reads:
+
+- `NFT_CONTRACT`
+- `OWNER_PRIVATE_KEY`
+- `TRANSFER_BATCH_FILE`
+
+For multi-wallet milestone proof, run the transfer script once per source wallet.
 
 ## Notes
 

@@ -41,6 +41,19 @@ Out of scope:
 - [DEPLOYMENT.md](DEPLOYMENT.md) documents deployment and verification
 - [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
 
+## Operational Scripts
+
+The repo includes reproducible Foundry scripts for milestone operations:
+
+- `script/DeployNodeNFT.s.sol` deploys the contract
+- `script/MintNodeNFTBatch.s.sol` performs operator-driven batch minting from a JSON file
+- `script/TransferNodeNFTBatch.s.sol` performs owner-driven batch transfers from a JSON file
+
+Example batch files live under `script/examples/`:
+
+- `mint-batch.example.json`
+- `transfer-batch.example.json`
+
 ## Tooling
 
 - Foundry
@@ -55,6 +68,12 @@ Standard commands:
 forge fmt --check
 forge build
 forge test
+```
+
+Targeted local verification:
+
+```sh
+forge test --offline --no-auto-detect --match-contract NodeNFTOperationsTest
 ```
 
 If plain `forge test` crashes locally in some macOS environments, use:

@@ -24,6 +24,7 @@ This file records the public proof for Milestone 1 delivery.
 - target: `>= 100 testnet mints`
 - actual mint count: `TBD`
 - token id range: `TBD`
+- batch file used: `TBD`
 - sample mint tx hashes:
   - `TBD`
   - `TBD`
@@ -32,6 +33,7 @@ This file records the public proof for Milestone 1 delivery.
 ## Transfer Activity
 
 - wallets used: `TBD`
+- transfer batch files used: `TBD`
 - sample transfer tx hashes:
   - `TBD`
   - `TBD`
