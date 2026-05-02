@@ -41,6 +41,16 @@ contract NodeNFTOperationsTest is Test {
         harness.readMintBatch("script/examples/mint-batch.invalid.json");
     }
 
+    function testReadMintBatchRejectsNodeTypeOverflow() public {
+        vm.expectRevert(abi.encodeWithSignature("NodeTypeOutOfRange(uint256)", uint256(type(uint32).max) + 1));
+        harness.readMintBatch("script/examples/mint-batch.node-type-overflow.json");
+    }
+
+    function testReadMintBatchRejectsSubscriptionExpiryOverflow() public {
+        vm.expectRevert(abi.encodeWithSignature("SubscriptionExpiryOutOfRange(uint256)", uint256(type(uint64).max) + 1));
+        harness.readMintBatch("script/examples/mint-batch.expiry-overflow.json");
+    }
+
     function testReadTransferBatchRejectsLengthMismatch() public {
         vm.expectRevert(abi.encodeWithSignature("BatchLengthMismatch()"));
         harness.readTransferBatch("script/examples/transfer-batch.invalid.json");

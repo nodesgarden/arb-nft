@@ -2,6 +2,15 @@
 
 This project deploys `NodeNFT` to Arbitrum Sepolia with Foundry.
 
+Milestone 1 has already been deployed, verified, submitted to Arbitrum, and accepted. This runbook is retained for reproducibility and future testnet operations against the Milestone 1 contract.
+
+Accepted Milestone 1 contract:
+
+- network: `Arbitrum Sepolia`
+- chain id: `421614`
+- contract: `0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`
+- explorer: `https://sepolia.arbiscan.io/address/0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392#code`
+
 ## Required Environment Variables
 
 Contract constructor inputs:

@@ -8,6 +8,8 @@ abstract contract NodeNFTOperations is Script {
 
     error BatchLengthMismatch();
     error EmptyBatch();
+    error NodeTypeOutOfRange(uint256 nodeType);
+    error SubscriptionExpiryOutOfRange(uint256 subscriptionExpiry);
 
     struct MintBatch {
         address[] recipients;
@@ -34,6 +36,13 @@ abstract contract NodeNFTOperations is Script {
         _requireSameLength(batch.recipients.length, batch.subscriptionExpiries.length);
 
         if (batch.recipients.length == 0) revert EmptyBatch();
+
+        for (uint256 i = 0; i < batch.recipients.length; ++i) {
+            if (batch.nodeTypes[i] > type(uint32).max) revert NodeTypeOutOfRange(batch.nodeTypes[i]);
+            if (batch.subscriptionExpiries[i] > type(uint64).max) {
+                revert SubscriptionExpiryOutOfRange(batch.subscriptionExpiries[i]);
+            }
+        }
     }
 
     function _readTransferBatch(string memory filePath) internal view returns (TransferBatch memory batch) {

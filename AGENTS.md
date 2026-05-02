@@ -25,7 +25,7 @@ forge coverage       # Generate test coverage
 - **On-chain data per token**: `nodeId` (uint256), `nodeType` (uint32), `subscriptionExpiry` (uint64)
 - **tokenURI**: baseURI + tokenId → points to nodes.garden API for dynamic metadata
 - **Events**: `NodeMinted`, `SubscriptionExtended`, `NodeTransferSync` (emitted on transfers for backend indexing)
-- **Burn**: Disabled in Milestone 1 (reverts with `BURN_DISABLED`)
+- **Burn**: Disabled in Milestone 1 (reverts with `BurnDisabled()`)
 
 ### Key Mappings
 - `_nodeDataByTokenId`: tokenId → NodeData struct

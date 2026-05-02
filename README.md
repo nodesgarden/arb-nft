@@ -1,7 +1,9 @@
 # Node NFT — nodes.garden
 
-This repository contains the Milestone 1 `NodeNFT` smart contract for nodes.garden on Arbitrum Sepolia.
+This repository contains the completed Milestone 1 `NodeNFT` smart contract for nodes.garden on Arbitrum Sepolia.
 Each NFT represents a transferable node subscription access right while private node data and subscription lifecycle details remain off-chain.
+
+Milestone 1 has been submitted to Arbitrum and accepted. The accepted deployment and operational evidence are recorded in [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md).
 
 ## Contract Model
 
@@ -23,7 +25,9 @@ Included:
 
 - Node NFT contract
 - Foundry test suite
-- Arbitrum Sepolia deployment workflow
+- Arbitrum Sepolia deployment and verification
+- 100 testnet mints
+- representative multi-wallet transfers
 - public reviewer-facing documentation
 
 Out of scope:
@@ -43,7 +47,7 @@ Out of scope:
 
 ## Operational Scripts
 
-The repo includes reproducible Foundry scripts for milestone operations:
+The repo includes reproducible Foundry scripts for Milestone 1 operations:
 
 - `script/DeployNodeNFT.s.sol` deploys the contract
 - `script/MintNodeNFTBatch.s.sol` performs operator-driven batch minting from a JSON file
@@ -88,4 +92,5 @@ The CI workflow uses the standard command path. The offline variant is only a lo
 
 - never commit private keys or RPC URLs
 - keep deploy secrets in local environment variables
+- validate batch input before broadcasting milestone operations
 - metadata must never expose private keys, access tokens, or internal node data

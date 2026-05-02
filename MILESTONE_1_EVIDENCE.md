@@ -2,6 +2,8 @@
 
 This file records the public proof for Milestone 1 delivery.
 
+Status: Milestone 1 was submitted to Arbitrum and accepted.
+
 ## Deployment
 
 - network: `Arbitrum Sepolia`
@@ -56,3 +58,4 @@ This file records the public proof for Milestone 1 delivery.
 - [x] representative multi-wallet transfers completed
 - [x] metadata endpoint serves minted tokens
 - [x] milestone artifacts recorded in this file
+- [x] Milestone 1 submitted to Arbitrum and accepted
