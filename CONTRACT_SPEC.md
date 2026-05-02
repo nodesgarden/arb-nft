@@ -5,7 +5,9 @@
 `NodeNFT` is an ERC-721 contract for nodes.garden.
 Each token represents a transferable subscription access right for a backend-managed node.
 
-Milestone 1 keeps the on-chain model deliberately small. The contract is an ownership and expiry registry, not a full mirror of the Rails domain model.
+Milestone 1 keeps the NFT model deliberately small. The contract is an ownership and expiry registry, not a full mirror of the Rails domain model.
+
+Milestone 2 adds `NodeNFTMarketplace`, a separate fixed-price escrow contract for Arbitrum Sepolia testnet marketplace proof.
 
 ## Canonical Field Mapping
 
@@ -129,3 +131,90 @@ The following remain off-chain by design:
 - internal support metadata
 
 That data lives in the nodes.garden backend and is exposed selectively through the public metadata API where appropriate.
+
+## NodeNFTMarketplace
+
+`NodeNFTMarketplace` lists active `NodeNFT` tokens for native ETH. It is intentionally separate from `NodeNFT` so the NFT contract remains minimal and already-minted tokens do not need migration.
+
+### Constructor
+
+`constructor(address nodeNFT_)`
+
+Rules:
+
+- `nodeNFT_` must be non-zero
+- the referenced contract must expose the `NodeNFT` ERC-721 and `nodeData` interface
+
+### Listing Creation
+
+`createListing(uint256 tokenId, uint256 priceWei) returns (uint256 listingId)`
+
+Rules:
+
+- `priceWei` must be greater than zero
+- the token must not already have an active listing
+- the token subscription expiry from `NodeNFT.nodeData(tokenId)` must be in the future
+- the caller must own the token or the underlying ERC-721 transfer reverts
+- the marketplace must be approved to transfer the token
+
+Effects:
+
+- creates the next sequential listing id starting from `1`
+- records seller, token id, price, and active status
+- maps `tokenId -> active listing id`
+- transfers the NFT from seller into marketplace escrow
+- emits `ListingCreated`
+
+### Listing Cancellation
+
+`cancelListing(uint256 listingId)`
+
+Rules:
+
+- listing must be active
+- caller must be the recorded seller
+
+Effects:
+
+- marks the listing inactive
+- clears the active listing lookup for the token
+- transfers the NFT back to the seller
+- emits `ListingCancelled`
+
+### Purchase
+
+`buy(uint256 listingId) payable`
+
+Rules:
+
+- listing must be active
+- buyer must not be the seller
+- `msg.value` must exactly equal the listing price
+
+Effects:
+
+- marks the listing inactive
+- clears the active listing lookup for the token
+- pays the seller directly in native ETH
+- transfers the NFT from marketplace escrow to the buyer
+- emits `ListingPurchased`
+
+There is no protocol fee in Milestone 2.
+
+### Marketplace Events
+
+- `ListingCreated(uint256 indexed listingId, uint256 indexed tokenId, address indexed seller, uint256 priceWei)`
+- `ListingCancelled(uint256 indexed listingId, uint256 indexed tokenId, address indexed seller)`
+- `ListingPurchased(uint256 indexed listingId, uint256 indexed tokenId, address indexed seller, address buyer, uint256 priceWei)`
+
+### Marketplace Errors
+
+- `NodeNFTRequired()`
+- `PriceRequired()`
+- `SubscriptionExpired()`
+- `ListingInactive()`
+- `SellerRequired()`
+- `BuyerRequired()`
+- `WrongPrice()`
+- `TokenAlreadyListed()`
+- `PaymentFailed()`

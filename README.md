@@ -1,13 +1,13 @@
 # Node NFT — nodes.garden
 
-This repository contains the completed Milestone 1 `NodeNFT` smart contract for nodes.garden on Arbitrum Sepolia.
+This repository contains the nodes.garden `NodeNFT` smart contract and the Milestone 2 testnet marketplace contract for Arbitrum Sepolia.
 Each NFT represents a transferable node subscription access right while private node data and subscription lifecycle details remain off-chain.
 
 Milestone 1 has been submitted to Arbitrum and accepted. The accepted deployment and operational evidence are recorded in [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md).
 
 ## Contract Model
 
-The contract is intentionally minimal:
+The NFT contract is intentionally minimal:
 
 - ERC-721 token with role-gated minting and subscription extension
 - `nodeId` stores the Rails `nodes.id`
@@ -18,6 +18,14 @@ The contract is intentionally minimal:
 - burn is intentionally disabled in Milestone 1
 
 Tier selection, tariff plans, lifecycle status, pricing, and all private node credentials remain off-chain.
+
+The Milestone 2 marketplace contract adds fixed-price native ETH escrow:
+
+- sellers list active Node NFTs by transferring them into marketplace escrow
+- sellers can cancel active listings and recover the NFT
+- buyers purchase with exact native ETH, paying the seller directly
+- Rails indexes marketplace events and applies backend ownership changes after confirmed purchase
+- there is no protocol fee in Milestone 2
 
 ## Milestone 1 Scope
 
@@ -38,6 +46,23 @@ Out of scope:
 - burn-to-reveal flows
 - upgradeability
 
+## Milestone 2 Scope
+
+Included:
+
+- `NodeNFTMarketplace` fixed-price escrow contract
+- native ETH payments on Arbitrum Sepolia
+- listing, cancellation, and purchase events for Rails indexing
+- Foundry tests for escrow, cancellation, purchase, and invalid state paths
+
+Out of scope:
+
+- protocol fees
+- ERC-20 or stablecoin payments
+- mainnet deployment
+- public marketplace launch controls
+- backend indexing and dashboard UI, which live in the `nodes.garden` Rails app
+
 ## Repository Guide
 
 - [CONTRACT_SPEC.md](CONTRACT_SPEC.md) defines the canonical contract semantics
@@ -50,6 +75,7 @@ Out of scope:
 The repo includes reproducible Foundry scripts for Milestone 1 operations:
 
 - `script/DeployNodeNFT.s.sol` deploys the contract
+- `script/DeployNodeNFTMarketplace.s.sol` deploys the marketplace for an existing `NodeNFT`
 - `script/MintNodeNFTBatch.s.sol` performs operator-driven batch minting from a JSON file
 - `script/TransferNodeNFTBatch.s.sol` performs owner-driven batch transfers from a JSON file
 

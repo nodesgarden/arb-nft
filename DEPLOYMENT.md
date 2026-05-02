@@ -1,6 +1,6 @@
 # Arbitrum Sepolia Deployment Runbook
 
-This project deploys `NodeNFT` to Arbitrum Sepolia with Foundry.
+This project deploys `NodeNFT` and `NodeNFTMarketplace` to Arbitrum Sepolia with Foundry.
 
 Milestone 1 has already been deployed, verified, submitted to Arbitrum, and accepted. This runbook is retained for reproducibility and future testnet operations against the Milestone 1 contract.
 
@@ -30,6 +30,7 @@ Deployment and verification inputs:
 Post-deploy operation inputs:
 
 - `NFT_CONTRACT`
+- `MARKETPLACE_CONTRACT`
 - `OPERATOR_PRIVATE_KEY`
 - `OWNER_PRIVATE_KEY`
 - `MINT_BATCH_FILE`
@@ -49,6 +50,7 @@ export NFT_SYMBOL="NODE"
 export BASE_URI="https://nodes.garden/api/nft/"
 
 export NFT_CONTRACT="0x..."
+export MARKETPLACE_CONTRACT="0x..."
 export OPERATOR_PRIVATE_KEY="0x..."
 export OWNER_PRIVATE_KEY="0x..."
 export MINT_BATCH_FILE="script/examples/mint-batch.example.json"
@@ -92,6 +94,22 @@ Expected outputs:
 - broadcast artifact under `broadcast/`
 - verification submission status
 
+## Deploy Marketplace
+
+Deploy the marketplace after `NodeNFT` exists. The script reads `NFT_CONTRACT` and stores that address immutably.
+
+```sh
+forge script script/DeployNodeNFTMarketplace.s.sol:DeployNodeNFTMarketplace \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --private-key "$DEPLOYER_PRIVATE_KEY" \
+  --broadcast \
+  --verify \
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  -vvv
+```
+
+Record the deployed marketplace address, deployment tx hash, deployer address, and start block for the Rails marketplace indexer.
+
 ## Standalone Verification Command
 
 If verification needs to be retried manually:
@@ -104,6 +122,18 @@ forge verify-contract \
   --etherscan-api-key "$ETHERSCAN_API_KEY" \
   <DEPLOYED_ADDRESS> \
   src/NodeNFT.sol:NodeNFT
+```
+
+Marketplace verification:
+
+```sh
+forge verify-contract \
+  --chain 421614 \
+  --watch \
+  --guess-constructor-args \
+  --etherscan-api-key "$ETHERSCAN_API_KEY" \
+  <DEPLOYED_MARKETPLACE_ADDRESS> \
+  src/NodeNFTMarketplace.sol:NodeNFTMarketplace
 ```
 
 ## Post-Deploy Checklist
