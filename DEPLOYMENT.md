@@ -4,6 +4,13 @@ This project deploys `NodeNFT` and `NodeNFTMarketplace` to Arbitrum Sepolia with
 
 Milestone 1 has already been deployed, verified, submitted to Arbitrum, and accepted. This runbook is retained for reproducibility and future testnet operations against the Milestone 1 contract.
 
+Current handoff:
+
+- `NodeNFT` is already deployed at the accepted address below.
+- `NodeNFTMarketplace` is implemented locally but has not yet been deployed.
+- Rails marketplace code is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
+- After marketplace deployment, Rails must be configured with the marketplace address and deployment block before the indexer can run.
+
 Accepted Milestone 1 contract:
 
 - network: `Arbitrum Sepolia`
@@ -35,6 +42,14 @@ Post-deploy operation inputs:
 - `OWNER_PRIVATE_KEY`
 - `MINT_BATCH_FILE`
 - `TRANSFER_BATCH_FILE`
+
+Rails marketplace inputs in `nodes.garden`:
+
+- `ARB_SEPOLIA_RPC_URL`
+- `NODE_NFT_CONTRACT_ADDRESS`
+- `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS`
+- `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK`
+- optional `NFT_MARKETPLACE_SYNC_CRON`
 
 ## Suggested Local Export
 
@@ -110,6 +125,37 @@ forge script script/DeployNodeNFTMarketplace.s.sol:DeployNodeNFTMarketplace \
 
 Record the deployed marketplace address, deployment tx hash, deployer address, and start block for the Rails marketplace indexer.
 
+After deployment:
+
+1. Export or set Rails secrets/env in `nodes.garden`:
+
+   ```sh
+   export ARB_SEPOLIA_RPC_URL="https://your-arbitrum-sepolia-rpc"
+   export NODE_NFT_CONTRACT_ADDRESS="0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392"
+   export NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS="0x..."
+   export NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK="..."
+   ```
+
+2. Run the Rails migration if not already applied:
+
+   ```sh
+   cd /Users/ilyalebedev/projects/nodes.garden
+   rbenv exec bundle exec rails db:migrate
+   ```
+
+3. Verify the Rails marketplace stack:
+
+   ```sh
+   rbenv exec bundle exec rspec spec/models/node_nft_spec.rb spec/services/nft_marketplace/event_applier_spec.rb spec/services/nft_marketplace/syncer_spec.rb spec/requests/dashboard/marketplace_spec.rb
+   npm run build
+   ```
+
+4. Run one sync manually before relying on cron:
+
+   ```sh
+   rbenv exec bundle exec rails runner 'NftMarketplace::SyncJob.perform_now'
+   ```
+
 ## Standalone Verification Command
 
 If verification needs to be retried manually:
@@ -138,7 +184,9 @@ forge verify-contract \
 
 ## Post-Deploy Checklist
 
-Record all of the following in `MILESTONE_1_EVIDENCE.md`:
+Record Milestone 1 evidence in `MILESTONE_1_EVIDENCE.md`. Record Milestone 2 marketplace evidence in a new Milestone 2 evidence section or file.
+
+For `NodeNFT`:
 
 - deployed address
 - deployment tx hash
@@ -147,6 +195,19 @@ Record all of the following in `MILESTONE_1_EVIDENCE.md`:
 - admin address
 - operator address
 - base URI used at deployment
+
+For `NodeNFTMarketplace`:
+
+- deployed address
+- deployment tx hash
+- verification URL
+- deployer address
+- constructor `NFT_CONTRACT`
+- deployment block used by Rails
+- Rails env names and values shape, without secrets
+- sample `ListingCreated`, `ListingCancelled`, and `ListingPurchased` tx hashes
+- indexed Rails counts
+- screenshot references for gated marketplace UI
 
 ## Batch Mint Workflow
 

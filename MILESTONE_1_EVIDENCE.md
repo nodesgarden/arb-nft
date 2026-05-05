@@ -4,6 +4,13 @@ This file records the public proof for Milestone 1 delivery.
 
 Status: Milestone 1 was submitted to Arbitrum and accepted.
 
+Current context:
+
+- This file is historical Milestone 1 evidence and should not be rewritten for Milestone 2.
+- Milestone 2 contract work now lives in `src/NodeNFTMarketplace.sol`.
+- Milestone 2 Rails marketplace work now lives in `/Users/ilyalebedev/projects/nodes.garden`.
+- When Milestone 2 is deployed and KPI proof is generated, create a new Milestone 2 evidence section/file rather than mixing it into the accepted Milestone 1 proof.
+
 ## Deployment
 
 - network: `Arbitrum Sepolia`

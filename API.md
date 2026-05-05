@@ -3,6 +3,13 @@
 `NodeNFT.tokenURI(tokenId)` returns `BASE_URI + tokenId`.
 The metadata endpoint behind that URL is the public source used by wallets, marketplaces, and explorers.
 
+Current Rails handoff:
+
+- metadata still lives in the `nodes.garden` Rails app
+- marketplace dashboard/API endpoints now also live in `nodes.garden`
+- marketplace actions are prepared by Rails but executed directly from the user's wallet
+- Rails state updates only after confirmed Arbitrum Sepolia events are indexed
+
 ## Endpoint
 
 - `GET /api/nft/:token_id`
@@ -68,3 +75,57 @@ The metadata API must map contract data to the Rails backend exactly:
 - never expose private keys, access tokens, or internal host data
 - do not encode backend-only secrets into image URLs or metadata attributes
 - treat the endpoint as fully public
+
+## Marketplace Rails Endpoints
+
+These are not smart-contract APIs. They are Rails dashboard helpers used by the Milestone 2 UI in `/Users/ilyalebedev/projects/nodes.garden`.
+
+Routes:
+
+- `GET /dashboard/marketplace`
+- `GET /dashboard/marketplace/transaction`
+- `GET /dashboard/marketplace/status`
+
+Access:
+
+- hidden from non-testers
+- hardcoded tester allowlist currently starts as user ID `[1]`
+- the sidebar link renders only for allowed users
+
+Transaction preparation:
+
+- `action_type=create_listing`
+  - requires `token_id`
+  - requires positive integer `price_wei`
+  - Rails verifies the node belongs to the current user
+  - Rails verifies the `NodeNft` has a known on-chain `owner_address` matching the current user's wallet
+  - Rails verifies the node subscription is active
+- `action_type=cancel_listing`
+  - requires `listing_id`
+  - Rails verifies the active listing seller matches the current user's wallet
+- `action_type=buy`
+  - requires `listing_id`
+  - Rails rejects buying your own listing
+
+Returned JSON includes:
+
+- `chain_id`: `0x66eee`
+- `chain_name`: `Arbitrum Sepolia`
+- `contract_address`: marketplace contract address from Rails env
+- `method`: one of `createListing`, `cancelListing`, `buy`
+- `args`: contract call args as strings
+- `value`: native ETH value in wei as a string
+- `marketplace_abi`: minimal ethers ABI for the frontend
+
+Required Rails env:
+
+- `ARB_SEPOLIA_RPC_URL`
+- `NODE_NFT_CONTRACT_ADDRESS`
+- `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS`
+- `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK`
+
+Indexer behavior:
+
+- `NftMarketplace::SyncJob` polls `ListingCreated`, `ListingCancelled`, `ListingPurchased`, and `NodeTransferSync`
+- events are stored idempotently by `tx_hash + log_index`
+- purchase events find or create the buyer by wallet address and transfer Rails `Node#user` to that buyer

@@ -5,6 +5,14 @@ Each NFT represents a transferable node subscription access right while private 
 
 Milestone 1 has been submitted to Arbitrum and accepted. The accepted deployment and operational evidence are recorded in [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md).
 
+Current state as of the latest handoff:
+
+- `NodeNFT` Milestone 1 is deployed on Arbitrum Sepolia and accepted by Arbitrum.
+- `NodeNFTMarketplace` Milestone 2 contract is implemented locally in this repo with Foundry tests.
+- The Rails marketplace backend/UI/indexer foundation is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
+- Milestone 2 has not yet been deployed to Arbitrum Sepolia from this repo.
+- KPI proof generation is still pending: `>=300` listing-created events and `>=100` buy/sell events.
+
 ## Contract Model
 
 The NFT contract is intentionally minimal:
@@ -54,6 +62,7 @@ Included:
 - native ETH payments on Arbitrum Sepolia
 - listing, cancellation, and purchase events for Rails indexing
 - Foundry tests for escrow, cancellation, purchase, and invalid state paths
+- Rails-side indexing/dashboard foundation in `nodes.garden`
 
 Out of scope:
 
@@ -61,7 +70,6 @@ Out of scope:
 - ERC-20 or stablecoin payments
 - mainnet deployment
 - public marketplace launch controls
-- backend indexing and dashboard UI, which live in the `nodes.garden` Rails app
 
 ## Repository Guide
 
@@ -69,6 +77,7 @@ Out of scope:
 - [API.md](API.md) defines the off-chain metadata API contract
 - [DEPLOYMENT.md](DEPLOYMENT.md) documents deployment and verification
 - [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
+- [PROGRESS.md](PROGRESS.md) is the current handoff checklist
 
 ## Operational Scripts
 
@@ -120,3 +129,31 @@ The CI workflow uses the standard command path. The offline variant is only a lo
 - keep deploy secrets in local environment variables
 - validate batch input before broadcasting milestone operations
 - metadata must never expose private keys, access tokens, or internal node data
+- Rails marketplace routes are intentionally hidden behind a hardcoded tester allowlist for Milestone 2
+- Rails ownership transfer must happen only after confirmed on-chain purchase events are indexed
+
+## Rails Work Completed In `nodes.garden`
+
+The Rails app now has the Milestone 2 marketplace foundation:
+
+- persisted listings, events, and sync cursor
+- `NodeNft` owner-address sync fields
+- idempotent event applier for create/cancel/purchase/transfer events
+- JSON-RPC log syncer and GoodJob cron hook
+- gated dashboard UI at `/dashboard/marketplace`
+- MetaMask transaction flow for list, cancel, and buy
+- transaction prep/status endpoints under `/dashboard/marketplace`
+
+Verification run in `nodes.garden`:
+
+```sh
+rbenv exec bundle exec rspec
+rbenv exec bundle exec rubocop app/models/node_nft.rb app/models/nft_marketplace app/services/nft_marketplace.rb app/services/nft_marketplace app/jobs/nft_marketplace app/controllers/dashboard/marketplace_controller.rb spec/models/node_nft_spec.rb spec/services/nft_marketplace spec/requests/dashboard/marketplace_spec.rb
+npm run build
+```
+
+Latest results:
+
+- RSpec: `446 examples, 0 failures, 3 pending`
+- targeted RuboCop: no offenses
+- JS build: passed

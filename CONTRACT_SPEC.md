@@ -9,6 +9,12 @@ Milestone 1 keeps the NFT model deliberately small. The contract is an ownership
 
 Milestone 2 adds `NodeNFTMarketplace`, a separate fixed-price escrow contract for Arbitrum Sepolia testnet marketplace proof.
 
+Implementation state:
+
+- `NodeNFT` is deployed and accepted for Milestone 1.
+- `NodeNFTMarketplace` is implemented locally with Foundry tests, but still needs Arbitrum Sepolia deployment.
+- Rails marketplace indexing/UI is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
+
 ## Canonical Field Mapping
 
 The on-chain `NodeData` struct maps to backend data as follows:
@@ -218,3 +224,68 @@ There is no protocol fee in Milestone 2.
 - `WrongPrice()`
 - `TokenAlreadyListed()`
 - `PaymentFailed()`
+
+## Off-Chain Marketplace Contract
+
+The Rails app is the operational indexer and product surface. It does not create marketplace state optimistically. It waits for confirmed on-chain logs.
+
+Rails records:
+
+- `nft_marketplace_listings`
+  - `listing_id`
+  - `token_id`
+  - `node_nft_id`
+  - `seller_address`
+  - `buyer_address`
+  - `price_wei`
+  - `status`: `active`, `cancelled`, `purchased`
+  - create/cancel/purchase tx hashes and block numbers
+- `nft_marketplace_events`
+  - event type
+  - listing id
+  - token id
+  - seller/buyer addresses
+  - price
+  - tx hash
+  - log index
+  - block metadata
+  - raw log
+- `nft_marketplace_sync_cursors`
+  - network
+  - last processed block
+- `node_nfts`
+  - `owner_address`
+  - last synced block and tx
+
+Rails event handling:
+
+- `ListingCreated`
+  - creates or updates an active listing
+  - links to `NodeNft` when the token exists locally
+  - records seller and price
+- `ListingCancelled`
+  - marks the listing cancelled
+- `ListingPurchased`
+  - marks the listing purchased
+  - finds or creates the buyer user by wallet address
+  - transfers Rails `Node#user` to the buyer
+  - updates `NodeNft.owner_address`
+- `NodeTransferSync`
+  - updates `NodeNft.owner_address`
+
+Rails listing eligibility:
+
+- current user must be in the hardcoded tester allowlist
+- node must belong to the current user
+- node must have a known `NodeNft`
+- Rails `NodeNft.owner_address` must match the current user's wallet
+- node subscription must be active
+
+No Milestone 3 semantics are included:
+
+- no mainnet
+- no public launch
+- no protocol fee
+- no stablecoin payments
+- no burn-to-reveal
+- no subscription renewal payment flow
