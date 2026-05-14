@@ -6,6 +6,9 @@ out/
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
+/broadcast/BuyMarketplaceListingsBatch.s.sol/
+/broadcast/CancelMarketplaceListingsBatch.s.sol/
+/broadcast/CreateMarketplaceListingsBatch.s.sol/
 
 # Docs
 docs/
