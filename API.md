@@ -6,9 +6,10 @@ The metadata endpoint behind that URL is the public source used by wallets, mark
 Current Rails handoff:
 
 - metadata still lives in the `nodes.garden` Rails app
-- marketplace dashboard/API endpoints now also live in `nodes.garden`
+- marketplace dashboard/API endpoints now live in `nodes.garden` `main` via PR #264
 - marketplace actions are prepared by Rails but executed directly from the user's wallet
-- Rails state updates only after confirmed Arbitrum Sepolia events are indexed
+- Rails state updates only after confirmed Arbitrum Sepolia events are indexed; target env marketplace contract configuration is still pending
+- deployed marketplace contract: `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`
 
 ## Endpoint
 
@@ -120,9 +121,9 @@ Returned JSON includes:
 Required Rails env:
 
 - `ARB_SEPOLIA_RPC_URL`
-- `NODE_NFT_CONTRACT_ADDRESS`
-- `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS`
-- `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK`
+- `NODE_NFT_CONTRACT_ADDRESS=0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`
+- `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS=0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`
+- `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK=268201592`
 
 Indexer behavior:
 

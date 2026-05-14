@@ -12,8 +12,8 @@ Milestone 2 adds `NodeNFTMarketplace`, a separate fixed-price escrow contract fo
 Implementation state:
 
 - `NodeNFT` is deployed and accepted for Milestone 1.
-- `NodeNFTMarketplace` is implemented locally with Foundry tests, but still needs Arbitrum Sepolia deployment.
-- Rails marketplace indexing/UI is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
+- `NodeNFTMarketplace` is implemented, deployed, and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
+- Rails marketplace indexing/UI is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264, but target env configuration/live sync is still pending.
 
 ## Canonical Field Mapping
 

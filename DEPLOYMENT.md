@@ -7,9 +7,9 @@ Milestone 1 has already been deployed, verified, submitted to Arbitrum, and acce
 Current handoff:
 
 - `NodeNFT` is already deployed at the accepted address below.
-- `NodeNFTMarketplace` is implemented locally but has not yet been deployed.
-- Rails marketplace code is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
-- After marketplace deployment, Rails must be configured with the marketplace address and deployment block before the indexer can run.
+- `NodeNFTMarketplace` is deployed and verified at the accepted marketplace address below.
+- Rails marketplace code is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- After marketplace deployment, the target Rails env must be configured with the marketplace address and deployment block before the indexer can run.
 
 Accepted Milestone 1 contract:
 
@@ -17,6 +17,16 @@ Accepted Milestone 1 contract:
 - chain id: `421614`
 - contract: `0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`
 - explorer: `https://sepolia.arbiscan.io/address/0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392#code`
+
+Milestone 2 marketplace contract:
+
+- network: `Arbitrum Sepolia`
+- chain id: `421614`
+- contract: `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`
+- deployment tx hash: `0x1ede554180b94ea92f117f38dab1bc26a7f7e702fe8303b2c5f281b4db2de16d`
+- deployment block: `268201592`
+- constructor `NFT_CONTRACT`: `0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`
+- explorer: `https://sepolia.arbiscan.io/address/0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A#code`
 
 ## Required Environment Variables
 
@@ -40,8 +50,13 @@ Post-deploy operation inputs:
 - `MARKETPLACE_CONTRACT`
 - `OPERATOR_PRIVATE_KEY`
 - `OWNER_PRIVATE_KEY`
+- `BUYER_PRIVATE_KEY`
+- `SELLER_PRIVATE_KEY`
 - `MINT_BATCH_FILE`
 - `TRANSFER_BATCH_FILE`
+- `MARKETPLACE_LISTING_BATCH_FILE`
+- `MARKETPLACE_BUY_BATCH_FILE`
+- `MARKETPLACE_CANCELLATION_BATCH_FILE`
 
 Rails marketplace inputs in `nodes.garden`:
 
@@ -68,8 +83,13 @@ export NFT_CONTRACT="0x..."
 export MARKETPLACE_CONTRACT="0x..."
 export OPERATOR_PRIVATE_KEY="0x..."
 export OWNER_PRIVATE_KEY="0x..."
+export BUYER_PRIVATE_KEY="0x..."
+export SELLER_PRIVATE_KEY="0x..."
 export MINT_BATCH_FILE="script/examples/mint-batch.example.json"
 export TRANSFER_BATCH_FILE="script/examples/transfer-batch.example.json"
+export MARKETPLACE_LISTING_BATCH_FILE="script/examples/marketplace-listings.example.json"
+export MARKETPLACE_BUY_BATCH_FILE="script/examples/marketplace-buys.example.json"
+export MARKETPLACE_CANCELLATION_BATCH_FILE="script/examples/marketplace-cancellations.example.json"
 ```
 
 ## Network Details
@@ -132,11 +152,11 @@ After deployment:
    ```sh
    export ARB_SEPOLIA_RPC_URL="https://your-arbitrum-sepolia-rpc"
    export NODE_NFT_CONTRACT_ADDRESS="0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392"
-   export NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS="0x..."
-   export NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK="..."
+   export NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS="0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A"
+   export NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK="268201592"
    ```
 
-2. Run the Rails migration if not already applied:
+2. Apply the marketplace Rails migration in the target env if not already applied:
 
    ```sh
    cd /Users/ilyalebedev/projects/nodes.garden
@@ -155,6 +175,8 @@ After deployment:
    ```sh
    rbenv exec bundle exec rails runner 'NftMarketplace::SyncJob.perform_now'
    ```
+
+   If relying on scheduled sync instead, enable `GOOD_JOB_ENABLE_CRON=true` and keep `NFT_MARKETPLACE_SYNC_CRON` unset for the default one-minute cadence or set it explicitly.
 
 ## Standalone Verification Command
 
@@ -256,6 +278,56 @@ The script reads:
 - `TRANSFER_BATCH_FILE`
 
 For multi-wallet milestone proof, run the transfer script once per source wallet.
+
+## Marketplace KPI Batch Workflows
+
+Create listings as the NFT owner. The script approves the marketplace for each token, then calls `createListing(tokenId, priceWei)`.
+
+```sh
+forge script script/CreateMarketplaceListingsBatch.s.sol:CreateMarketplaceListingsBatch \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+The listing script reads:
+
+- `NFT_CONTRACT`
+- `MARKETPLACE_CONTRACT`
+- `OWNER_PRIVATE_KEY`
+- `MARKETPLACE_LISTING_BATCH_FILE`
+
+Buy listings as a buyer wallet:
+
+```sh
+forge script script/BuyMarketplaceListingsBatch.s.sol:BuyMarketplaceListingsBatch \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+The buy script reads:
+
+- `MARKETPLACE_CONTRACT`
+- `BUYER_PRIVATE_KEY`
+- `MARKETPLACE_BUY_BATCH_FILE`
+
+Cancel active listings as the seller wallet:
+
+```sh
+forge script script/CancelMarketplaceListingsBatch.s.sol:CancelMarketplaceListingsBatch \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+The cancellation script reads:
+
+- `MARKETPLACE_CONTRACT`
+- `SELLER_PRIVATE_KEY`
+- `MARKETPLACE_CANCELLATION_BATCH_FILE`
+
+For KPI proof, generate listing and buy batches from the actual listing ids emitted on-chain. Do not guess listing ids when multiple wallets or retries are involved.
 
 ## Notes
 

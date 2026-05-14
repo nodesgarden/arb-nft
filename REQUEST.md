@@ -7,9 +7,10 @@ Current implementation handoff:
 
 - Milestone 1 has been completed, submitted to Arbitrum, and accepted.
 - Milestone 1 deployed `NodeNFT` on Arbitrum Sepolia at `0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`.
-- Milestone 2 fixed-price marketplace contract has been implemented locally in `/Users/ilyalebedev/projects/arb-nft`.
-- Milestone 2 Rails marketplace backend/UI/indexer foundation has been implemented locally in `/Users/ilyalebedev/projects/nodes.garden`.
-- Milestone 2 still needs marketplace contract deployment, Rails env configuration, demo event generation, and KPI evidence export.
+- Milestone 2 fixed-price marketplace contract has been implemented, deployed, and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
+- Milestone 2 Rails marketplace backend/UI/indexer foundation has been merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- Milestone 2 target Rails env configuration/live sync and KPI event generation are completed.
+- Milestone 2 still needs final screenshot/export evidence packaging.
 
 What was implemented in `nodes.garden`:
 
@@ -23,11 +24,19 @@ What was implemented in `nodes.garden`:
 - MetaMask calls for `createListing`, `cancelListing`, and `buy`
 - purchase event handling that finds/creates buyer by wallet address and transfers Rails `Node#user`
 
-Latest local verification in `nodes.garden`:
+Recorded marketplace-branch verification in `nodes.garden`:
 
 - RSpec: `446 examples, 0 failures, 3 pending`
 - targeted RuboCop: no offenses
 - JS build: passed
+
+Latest production marketplace sync counts:
+
+- `ListingCreated`: `300`
+- `ListingPurchased`: `100`
+- `ListingCancelled`: `200`
+- marketplace listings: `300`
+- active listings: `0`
 
 Submitted on
 

@@ -9,9 +9,10 @@ Current state as of the latest handoff:
 
 - `NodeNFT` Milestone 1 is deployed on Arbitrum Sepolia and accepted by Arbitrum.
 - `NodeNFTMarketplace` Milestone 2 contract is implemented locally in this repo with Foundry tests.
-- The Rails marketplace backend/UI/indexer foundation is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
-- Milestone 2 has not yet been deployed to Arbitrum Sepolia from this repo.
-- KPI proof generation is still pending: `>=300` listing-created events and `>=100` buy/sell events.
+- `NodeNFTMarketplace` is deployed and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
+- The Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- Target Rails env configuration, live sync, and KPI proof generation are completed: `300` listing-created events and `100` buy/sell events indexed.
+- Final screenshot/export evidence package is still pending.
 
 ## Contract Model
 
@@ -62,7 +63,7 @@ Included:
 - native ETH payments on Arbitrum Sepolia
 - listing, cancellation, and purchase events for Rails indexing
 - Foundry tests for escrow, cancellation, purchase, and invalid state paths
-- Rails-side indexing/dashboard foundation in `nodes.garden`
+- Rails-side indexing/dashboard foundation in `nodes.garden` main
 
 Out of scope:
 
@@ -77,21 +78,28 @@ Out of scope:
 - [API.md](API.md) defines the off-chain metadata API contract
 - [DEPLOYMENT.md](DEPLOYMENT.md) documents deployment and verification
 - [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
+- [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md) records marketplace deployment proof and remaining KPI evidence
 - [PROGRESS.md](PROGRESS.md) is the current handoff checklist
 
 ## Operational Scripts
 
-The repo includes reproducible Foundry scripts for Milestone 1 operations:
+The repo includes reproducible Foundry scripts for milestone operations:
 
 - `script/DeployNodeNFT.s.sol` deploys the contract
 - `script/DeployNodeNFTMarketplace.s.sol` deploys the marketplace for an existing `NodeNFT`
 - `script/MintNodeNFTBatch.s.sol` performs operator-driven batch minting from a JSON file
 - `script/TransferNodeNFTBatch.s.sol` performs owner-driven batch transfers from a JSON file
+- `script/CreateMarketplaceListingsBatch.s.sol` approves and lists owned NFTs from a JSON file
+- `script/BuyMarketplaceListingsBatch.s.sol` buys listings from a JSON file
+- `script/CancelMarketplaceListingsBatch.s.sol` cancels seller listings from a JSON file
 
 Example batch files live under `script/examples/`:
 
 - `mint-batch.example.json`
 - `transfer-batch.example.json`
+- `marketplace-listings.example.json`
+- `marketplace-buys.example.json`
+- `marketplace-cancellations.example.json`
 
 ## Tooling
 
@@ -134,7 +142,7 @@ The CI workflow uses the standard command path. The offline variant is only a lo
 
 ## Rails Work Completed In `nodes.garden`
 
-The Rails app now has the Milestone 2 marketplace foundation:
+The Rails app now has the Milestone 2 marketplace foundation merged into `main` via PR #264:
 
 - persisted listings, events, and sync cursor
 - `NodeNft` owner-address sync fields
@@ -144,7 +152,7 @@ The Rails app now has the Milestone 2 marketplace foundation:
 - MetaMask transaction flow for list, cancel, and buy
 - transaction prep/status endpoints under `/dashboard/marketplace`
 
-Verification run in `nodes.garden`:
+Recorded verification from the marketplace branch:
 
 ```sh
 rbenv exec bundle exec rspec
@@ -157,3 +165,13 @@ Latest results:
 - RSpec: `446 examples, 0 failures, 3 pending`
 - targeted RuboCop: no offenses
 - JS build: passed
+
+Latest `arb-nft` verification before resuming deployment:
+
+```sh
+forge fmt --check
+forge build
+forge test --offline --no-auto-detect
+```
+
+Result: `32 tests passed, 0 failed`.

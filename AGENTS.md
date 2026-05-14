@@ -9,8 +9,9 @@ Node NFT smart contract suite for nodes.garden on Arbitrum Sepolia. `NodeNFT` is
 Current handoff state:
 - Milestone 1 `NodeNFT` was deployed, verified, submitted to Arbitrum, and accepted.
 - Milestone 2 marketplace contract and Foundry tests are implemented in this repo.
-- Rails marketplace backend/UI/indexer foundation is implemented in `/Users/ilyalebedev/projects/nodes.garden`.
-- Milestone 2 contracts still need Arbitrum Sepolia deployment, Rails env configuration, demo data, and KPI event generation.
+- `NodeNFTMarketplace` is deployed and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
+- Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- Milestone 2 still needs target Rails env configuration, live sync, demo data, and KPI event generation.
 
 ## Build & Test Commands
 
@@ -46,6 +47,12 @@ forge coverage       # Generate test coverage
 - No protocol fee in Milestone 2
 - Emits `ListingCreated`, `ListingCancelled`, and `ListingPurchased`
 
+### KPI Batch Scripts
+- `script/CreateMarketplaceListingsBatch.s.sol` reads `MARKETPLACE_LISTING_BATCH_FILE` and uses `OWNER_PRIVATE_KEY`
+- `script/BuyMarketplaceListingsBatch.s.sol` reads `MARKETPLACE_BUY_BATCH_FILE` and uses `BUYER_PRIVATE_KEY`
+- `script/CancelMarketplaceListingsBatch.s.sol` reads `MARKETPLACE_CANCELLATION_BATCH_FILE` and uses `SELLER_PRIVATE_KEY`
+- Example JSON files live in `script/examples/`
+
 ### Rails Integration: `/Users/ilyalebedev/projects/nodes.garden`
 - Tables: `nft_marketplace_listings`, `nft_marketplace_events`, `nft_marketplace_sync_cursors`
 - `node_nfts` tracks `owner_address`, `last_synced_block_number`, and `last_synced_tx_hash`
@@ -67,13 +74,12 @@ Arbitrum Sepolia (testnet). Deployment scripts go in `script/`.
 
 ## Resume Checklist
 
-1. Deploy `NodeNFTMarketplace` with `script/DeployNodeNFTMarketplace.s.sol`.
-2. Set Rails env:
+1. Set Rails env:
    - `ARB_SEPOLIA_RPC_URL`
    - `NODE_NFT_CONTRACT_ADDRESS`
    - `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS`
    - `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK`
-3. Run Rails migrations in `nodes.garden`.
-4. Enable `GOOD_JOB_ENABLE_CRON=true` or enqueue `NftMarketplace::SyncJob` manually.
-5. Create production/staging demo users and update the hardcoded tester list if needed.
-6. Generate KPI evidence: `>=300` listing-created events and `>=100` buy/sell events.
+2. Apply marketplace Rails migration in the target env if not already applied.
+3. Enable `GOOD_JOB_ENABLE_CRON=true` if relying on cron, or enqueue `NftMarketplace::SyncJob` manually.
+4. Create/select target-env demo tester users and update the hardcoded tester list if needed.
+5. Generate KPI evidence: `>=300` listing-created events and `>=100` buy/sell events.

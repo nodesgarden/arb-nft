@@ -9,6 +9,7 @@ abstract contract NodeNFTOperations is Script {
     error BatchLengthMismatch();
     error EmptyBatch();
     error NodeTypeOutOfRange(uint256 nodeType);
+    error PriceRequired();
     error SubscriptionExpiryOutOfRange(uint256 subscriptionExpiry);
 
     struct MintBatch {
@@ -21,6 +22,20 @@ abstract contract NodeNFTOperations is Script {
     struct TransferBatch {
         address[] recipients;
         uint256[] tokenIds;
+    }
+
+    struct MarketplaceListingBatch {
+        uint256[] tokenIds;
+        uint256[] pricesWei;
+    }
+
+    struct MarketplaceBuyBatch {
+        uint256[] listingIds;
+        uint256[] pricesWei;
+    }
+
+    struct MarketplaceCancellationBatch {
+        uint256[] listingIds;
     }
 
     function _readMintBatch(string memory filePath) internal view returns (MintBatch memory batch) {
@@ -56,7 +71,53 @@ abstract contract NodeNFTOperations is Script {
         if (batch.recipients.length == 0) revert EmptyBatch();
     }
 
+    function _readMarketplaceListingBatch(string memory filePath)
+        internal
+        view
+        returns (MarketplaceListingBatch memory batch)
+    {
+        string memory json = vm.readFile(filePath);
+
+        batch.tokenIds = json.readUintArray(".tokenIds");
+        batch.pricesWei = json.readUintArray(".pricesWei");
+
+        _requireSameLength(batch.tokenIds.length, batch.pricesWei.length);
+
+        if (batch.tokenIds.length == 0) revert EmptyBatch();
+        _requirePositivePrices(batch.pricesWei);
+    }
+
+    function _readMarketplaceBuyBatch(string memory filePath) internal view returns (MarketplaceBuyBatch memory batch) {
+        string memory json = vm.readFile(filePath);
+
+        batch.listingIds = json.readUintArray(".listingIds");
+        batch.pricesWei = json.readUintArray(".pricesWei");
+
+        _requireSameLength(batch.listingIds.length, batch.pricesWei.length);
+
+        if (batch.listingIds.length == 0) revert EmptyBatch();
+        _requirePositivePrices(batch.pricesWei);
+    }
+
+    function _readMarketplaceCancellationBatch(string memory filePath)
+        internal
+        view
+        returns (MarketplaceCancellationBatch memory batch)
+    {
+        string memory json = vm.readFile(filePath);
+
+        batch.listingIds = json.readUintArray(".listingIds");
+
+        if (batch.listingIds.length == 0) revert EmptyBatch();
+    }
+
     function _requireSameLength(uint256 expected, uint256 actual) internal pure {
         if (expected != actual) revert BatchLengthMismatch();
+    }
+
+    function _requirePositivePrices(uint256[] memory pricesWei) private pure {
+        for (uint256 i = 0; i < pricesWei.length; ++i) {
+            if (pricesWei[i] == 0) revert PriceRequired();
+        }
     }
 }

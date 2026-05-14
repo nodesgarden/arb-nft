@@ -3,9 +3,10 @@
 ## Current Status
 
 - Milestone 1: completed, submitted to Arbitrum, and accepted.
-- Milestone 2 contract: implemented locally in `arb-nft`.
-- Milestone 2 Rails backend/UI/indexer: implemented locally in `/Users/ilyalebedev/projects/nodes.garden`.
-- Milestone 2 deployment/KPI proof: pending.
+- Milestone 2 contract: implemented, deployed, and verified on Arbitrum Sepolia.
+- Milestone 2 Rails backend/UI/indexer: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof: completed.
+- Milestone 2 screenshot/export evidence package: pending.
 
 ## Milestone 2 Completed Locally
 
@@ -18,7 +19,8 @@ In this repo:
 5. [x] Add duplicate active listing protection.
 6. [x] Add Foundry tests for create/cancel/buy/reject paths.
 7. [x] Add deployment script for marketplace contract.
-8. [x] Update contract/deployment docs.
+8. [x] Add KPI batch scripts for create-listing, buy, and cancel operations.
+9. [x] Update contract/deployment docs.
 
 In `nodes.garden`:
 
@@ -33,24 +35,30 @@ In `nodes.garden`:
 9. [x] Add sidebar link for allowed tester users.
 10. [x] Add tests for event application, syncer, model behavior, and dashboard access.
 
-Latest `nodes.garden` verification:
+Recorded `nodes.garden` verification from the marketplace branch:
 
 - `rbenv exec bundle exec rspec`: `446 examples, 0 failures, 3 pending`
 - targeted RuboCop: no offenses
 - `npm run build`: passed
 
+Latest `arb-nft` verification:
+
+- `forge fmt --check`: passed
+- `forge build`: passed
+- `forge test --offline --no-auto-detect`: `39 tests passed, 0 failed`
+
 ## Milestone 2 Remaining
 
-1. [ ] Deploy `NodeNFTMarketplace` on Arbitrum Sepolia.
-2. [ ] Verify marketplace contract on Arbiscan.
-3. [ ] Configure Rails env with contract addresses and deployment block.
-4. [ ] Run Rails migrations in staging/production.
-5. [ ] Run first live sync and confirm indexed events.
-6. [ ] Create/select demo tester users and update hardcoded allowlist if needed.
-7. [ ] Mint extra demo NFTs if needed.
-8. [ ] Generate `>=300` listing-created events.
-9. [ ] Generate `>=100` buy/sell events.
-10. [ ] Capture screenshots, tx hashes, indexed counts, and evidence package.
+1. [x] Deploy `NodeNFTMarketplace` on Arbitrum Sepolia.
+2. [x] Verify marketplace contract on Arbiscan.
+3. [x] Configure Rails env with contract addresses and deployment block.
+4. [x] Apply marketplace migration in the target Rails env if not already applied.
+5. [x] Run live sync and confirm indexed events.
+6. [x] Generate `>=300` listing-created events.
+7. [x] Generate `>=100` buy/sell events.
+8. [ ] Capture screenshots, tx hashes, indexed counts, and final evidence package.
+
+Marketplace deployment evidence: [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md)
 
 ## Historical Progress — Milestone 1 (Node NFT Smart Contract)
 

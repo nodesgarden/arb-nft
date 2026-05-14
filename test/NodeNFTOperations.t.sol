@@ -36,6 +36,37 @@ contract NodeNFTOperationsTest is Test {
         assertEq(tokenIds[2], 3);
     }
 
+    function testReadMarketplaceListingBatchParsesExampleFile() public view {
+        (uint256[] memory tokenIds, uint256[] memory pricesWei) =
+            harness.readMarketplaceListingBatch("script/examples/marketplace-listings.example.json");
+
+        assertEq(tokenIds.length, 3);
+        assertEq(tokenIds[0], 1);
+        assertEq(tokenIds[2], 3);
+        assertEq(pricesWei[0], 0.001 ether);
+        assertEq(pricesWei[2], 0.003 ether);
+    }
+
+    function testReadMarketplaceBuyBatchParsesExampleFile() public view {
+        (uint256[] memory listingIds, uint256[] memory pricesWei) =
+            harness.readMarketplaceBuyBatch("script/examples/marketplace-buys.example.json");
+
+        assertEq(listingIds.length, 2);
+        assertEq(listingIds[0], 1);
+        assertEq(listingIds[1], 2);
+        assertEq(pricesWei[0], 0.001 ether);
+        assertEq(pricesWei[1], 0.002 ether);
+    }
+
+    function testReadMarketplaceCancellationBatchParsesExampleFile() public view {
+        uint256[] memory listingIds =
+            harness.readMarketplaceCancellationBatch("script/examples/marketplace-cancellations.example.json");
+
+        assertEq(listingIds.length, 3);
+        assertEq(listingIds[0], 1);
+        assertEq(listingIds[2], 3);
+    }
+
     function testReadMintBatchRejectsLengthMismatch() public {
         vm.expectRevert(abi.encodeWithSignature("BatchLengthMismatch()"));
         harness.readMintBatch("script/examples/mint-batch.invalid.json");
@@ -54,5 +85,25 @@ contract NodeNFTOperationsTest is Test {
     function testReadTransferBatchRejectsLengthMismatch() public {
         vm.expectRevert(abi.encodeWithSignature("BatchLengthMismatch()"));
         harness.readTransferBatch("script/examples/transfer-batch.invalid.json");
+    }
+
+    function testReadMarketplaceListingBatchRejectsLengthMismatch() public {
+        vm.expectRevert(abi.encodeWithSignature("BatchLengthMismatch()"));
+        harness.readMarketplaceListingBatch("script/examples/marketplace-listings.invalid.json");
+    }
+
+    function testReadMarketplaceListingBatchRejectsZeroPrice() public {
+        vm.expectRevert(abi.encodeWithSignature("PriceRequired()"));
+        harness.readMarketplaceListingBatch("script/examples/marketplace-listings.zero-price.json");
+    }
+
+    function testReadMarketplaceBuyBatchRejectsLengthMismatch() public {
+        vm.expectRevert(abi.encodeWithSignature("BatchLengthMismatch()"));
+        harness.readMarketplaceBuyBatch("script/examples/marketplace-buys.invalid.json");
+    }
+
+    function testReadMarketplaceCancellationBatchRejectsEmptyBatch() public {
+        vm.expectRevert(abi.encodeWithSignature("EmptyBatch()"));
+        harness.readMarketplaceCancellationBatch("script/examples/marketplace-cancellations.empty.json");
     }
 }
