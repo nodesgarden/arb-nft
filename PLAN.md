@@ -6,7 +6,7 @@ Current status:
 - Milestone 2 contract implementation is completed, deployed, and verified on Arbitrum Sepolia.
 - Milestone 2 Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof are completed.
-- Final screenshot/export evidence package is still pending.
+- Milestone 2 submission package is ready.
 
 ## Milestone 2 Resume Plan — Testnet Node NFT Marketplace
 
@@ -42,11 +42,11 @@ Deployment completed:
 3. deployment block: `268201592`
 4. verification URL: `https://sepolia.arbiscan.io/address/0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A#code`
 
-Required next steps:
+Submission package:
 
-1. Capture gated marketplace UI screenshots.
-2. Export or screenshot Rails indexed counts.
-3. Submit Milestone 2 evidence package.
+1. Reviewer-facing summary: [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md)
+2. Detailed evidence: [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md)
+3. Production gated marketplace URL: `https://nodes.garden/dashboard/marketplace`
 
 Verification commands before resuming deployment:
 

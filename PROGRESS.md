@@ -6,7 +6,7 @@
 - Milestone 2 contract: implemented, deployed, and verified on Arbitrum Sepolia.
 - Milestone 2 Rails backend/UI/indexer: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof: completed.
-- Milestone 2 screenshot/export evidence package: pending.
+- Milestone 2 submission package: ready.
 
 ## Milestone 2 Completed Locally
 
@@ -47,7 +47,7 @@ Latest `arb-nft` verification:
 - `forge build`: passed
 - `forge test --offline --no-auto-detect`: `39 tests passed, 0 failed`
 
-## Milestone 2 Remaining
+## Milestone 2 Submission Readiness
 
 1. [x] Deploy `NodeNFTMarketplace` on Arbitrum Sepolia.
 2. [x] Verify marketplace contract on Arbiscan.
@@ -56,9 +56,11 @@ Latest `arb-nft` verification:
 5. [x] Run live sync and confirm indexed events.
 6. [x] Generate `>=300` listing-created events.
 7. [x] Generate `>=100` buy/sell events.
-8. [ ] Capture screenshots, tx hashes, indexed counts, and final evidence package.
+8. [x] Record tx hashes, indexed counts, and final evidence package.
+9. [x] Record final production UI list/purchase test.
 
 Marketplace deployment evidence: [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md)
+Submission summary: [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md)
 
 ## Historical Progress — Milestone 1 (Node NFT Smart Contract)
 

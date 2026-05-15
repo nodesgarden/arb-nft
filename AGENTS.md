@@ -11,7 +11,8 @@ Current handoff state:
 - Milestone 2 marketplace contract and Foundry tests are implemented in this repo.
 - `NodeNFTMarketplace` is deployed and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
 - Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
-- Milestone 2 still needs target Rails env configuration, live sync, demo data, and KPI event generation.
+- Milestone 2 target Rails env configuration, live sync, production UI test, and KPI event generation are completed.
+- Milestone 2 submission package is ready in `MILESTONE_2_SUBMISSION.md`.
 
 ## Build & Test Commands
 
@@ -82,4 +83,4 @@ Arbitrum Sepolia (testnet). Deployment scripts go in `script/`.
 2. Apply marketplace Rails migration in the target env if not already applied.
 3. Enable `GOOD_JOB_ENABLE_CRON=true` if relying on cron, or enqueue `NftMarketplace::SyncJob` manually.
 4. Create/select target-env demo tester users and update the hardcoded tester list if needed.
-5. Generate KPI evidence: `>=300` listing-created events and `>=100` buy/sell events.
+5. Use `MILESTONE_2_SUBMISSION.md` and `MILESTONE_2_EVIDENCE.md` for reviewer submission.

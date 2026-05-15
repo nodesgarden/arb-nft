@@ -229,7 +229,7 @@ For `NodeNFTMarketplace`:
 - Rails env names and values shape, without secrets
 - sample `ListingCreated`, `ListingCancelled`, and `ListingPurchased` tx hashes
 - indexed Rails counts
-- screenshot references for gated marketplace UI
+- gated marketplace UI URL and final UI flow tx reference
 
 ## Batch Mint Workflow
 

@@ -11,8 +11,8 @@ Current state as of the latest handoff:
 - `NodeNFTMarketplace` Milestone 2 contract is implemented locally in this repo with Foundry tests.
 - `NodeNFTMarketplace` is deployed and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
 - The Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
-- Target Rails env configuration, live sync, and KPI proof generation are completed: `300` listing-created events and `100` buy/sell events indexed.
-- Final screenshot/export evidence package is still pending.
+- Target Rails env configuration, live sync, and KPI proof generation are completed: `303` listing-created events and `101` purchase events indexed.
+- Milestone 2 submission package is ready in [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md).
 
 ## Contract Model
 
@@ -78,7 +78,8 @@ Out of scope:
 - [API.md](API.md) defines the off-chain metadata API contract
 - [DEPLOYMENT.md](DEPLOYMENT.md) documents deployment and verification
 - [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
-- [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md) records marketplace deployment proof and remaining KPI evidence
+- [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md) records marketplace deployment proof and KPI evidence
+- [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md) is the reviewer-facing Milestone 2 summary
 - [PROGRESS.md](PROGRESS.md) is the current handoff checklist
 
 ## Operational Scripts
