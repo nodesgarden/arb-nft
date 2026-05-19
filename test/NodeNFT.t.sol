@@ -9,21 +9,35 @@ contract NodeNFTTest is Test {
 
     address private admin = address(0xA11CE);
     address private operator = address(0xB0B);
+    address private mintAuthorizer = address(0xD00D);
     address private user1 = address(0xCAFE);
     address private user2 = address(0xF00D);
 
     function setUp() public {
-        nft = new NodeNFT("nodes.garden Node NFT", "NODE", admin, operator, "https://api.nodes.garden/nft/");
+        nft = new NodeNFT(
+            "nodes.garden Node NFT", "NODE", admin, operator, mintAuthorizer, "https://api.nodes.garden/nft/"
+        );
     }
 
     function testConstructorRejectsZeroAdmin() public {
         vm.expectRevert(AdminRequired.selector);
-        new NodeNFT("nodes.garden Node NFT", "NODE", address(0), operator, "https://api.nodes.garden/nft/");
+        new NodeNFT(
+            "nodes.garden Node NFT", "NODE", address(0), operator, mintAuthorizer, "https://api.nodes.garden/nft/"
+        );
     }
 
     function testConstructorRejectsZeroOperator() public {
         vm.expectRevert(OperatorRequired.selector);
-        new NodeNFT("nodes.garden Node NFT", "NODE", admin, address(0), "https://api.nodes.garden/nft/");
+        new NodeNFT("nodes.garden Node NFT", "NODE", admin, address(0), mintAuthorizer, "https://api.nodes.garden/nft/");
+    }
+
+    function testConstructorRejectsZeroMintAuthorizer() public {
+        vm.expectRevert(MintAuthorizerRequired.selector);
+        new NodeNFT("nodes.garden Node NFT", "NODE", admin, operator, address(0), "https://api.nodes.garden/nft/");
+    }
+
+    function testConstructorGrantsMintAuthorizerRole() public view {
+        assertTrue(nft.hasRole(nft.MINT_AUTHORIZER_ROLE(), mintAuthorizer));
     }
 
     function testMintCreatesTokenAndData() public {
@@ -145,6 +159,7 @@ contract NodeNFTTest is Test {
     error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
     error AdminRequired();
     error OperatorRequired();
+    error MintAuthorizerRequired();
     error NodeTypeRequired();
     error TokenNotMinted();
 

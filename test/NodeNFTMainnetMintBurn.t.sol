@@ -24,11 +24,7 @@ contract NodeNFTMainnetMintBurnTest is Test {
 
     function setUp() public {
         mintAuthorizer = vm.addr(mintAuthorizerKey);
-        nft = new NodeNFT(NFT_NAME, "NODE", admin, operator, "https://api.nodes.garden/nft/");
-
-        bytes32 mintAuthorizerRole = nft.MINT_AUTHORIZER_ROLE();
-        vm.prank(admin);
-        nft.grantRole(mintAuthorizerRole, mintAuthorizer);
+        nft = new NodeNFT(NFT_NAME, "NODE", admin, operator, mintAuthorizer, "https://api.nodes.garden/nft/");
     }
 
     function testMintWithSignatureMintsToRequestedWallet() public {

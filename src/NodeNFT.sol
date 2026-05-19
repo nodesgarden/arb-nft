@@ -15,6 +15,7 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
 
     error AdminRequired();
     error OperatorRequired();
+    error MintAuthorizerRequired();
     error ToRequired();
     error NodeIdRequired();
     error NodeTypeRequired();
@@ -22,7 +23,6 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
     error NodeAlreadyMinted();
     error TokenNotMinted();
     error ExpiryNotExtended();
-    error BurnDisabled();
     error MintAuthorizationExpired();
     error MintNonceUsed();
     error MintSignerUnauthorized();
@@ -61,15 +61,18 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
         string memory symbol_,
         address admin,
         address operator,
+        address mintAuthorizer,
         string memory baseTokenUri_
     ) ERC721(name_, symbol_) EIP712(name_, "1") {
         if (admin == address(0)) revert AdminRequired();
         if (operator == address(0)) revert OperatorRequired();
+        if (mintAuthorizer == address(0)) revert MintAuthorizerRequired();
 
         _baseTokenUri = baseTokenUri_;
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(OPERATOR_ROLE, operator);
+        _grantRole(MINT_AUTHORIZER_ROLE, mintAuthorizer);
     }
 
     function mint(address to, uint256 nodeId, uint32 nodeType, uint64 subscriptionExpiry)
