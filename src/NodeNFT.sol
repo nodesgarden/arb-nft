@@ -2,10 +2,16 @@
 pragma solidity ^0.8.20;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract NodeNFT is ERC721, AccessControl {
+contract NodeNFT is ERC721, AccessControl, EIP712 {
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+    bytes32 public constant MINT_AUTHORIZER_ROLE = keccak256("MINT_AUTHORIZER_ROLE");
+    bytes32 public constant MINT_AUTHORIZATION_TYPEHASH = keccak256(
+        "MintAuthorization(address to,uint256 nodeId,uint32 nodeType,uint64 subscriptionExpiry,bytes32 nonce,uint64 deadline)"
+    );
 
     error AdminRequired();
     error OperatorRequired();
@@ -17,6 +23,9 @@ contract NodeNFT is ERC721, AccessControl {
     error TokenNotMinted();
     error ExpiryNotExtended();
     error BurnDisabled();
+    error MintAuthorizationExpired();
+    error MintNonceUsed();
+    error MintSignerUnauthorized();
 
     struct NodeData {
         uint256 nodeId;
@@ -24,11 +33,21 @@ contract NodeNFT is ERC721, AccessControl {
         uint64 subscriptionExpiry;
     }
 
+    struct MintAuthorization {
+        address to;
+        uint256 nodeId;
+        uint32 nodeType;
+        uint64 subscriptionExpiry;
+        bytes32 nonce;
+        uint64 deadline;
+    }
+
     uint256 private _nextTokenId = 1;
     string private _baseTokenUri;
 
     mapping(uint256 tokenId => NodeData) private _nodeDataByTokenId;
     mapping(uint256 nodeId => uint256 tokenId) private _tokenIdByNodeId;
+    mapping(bytes32 nonce => bool used) private _usedMintNonces;
 
     event BaseURIUpdated(string oldBaseURI, string newBaseURI);
     event NodeMinted(uint256 indexed tokenId, uint256 indexed nodeId, address indexed to);
@@ -41,7 +60,7 @@ contract NodeNFT is ERC721, AccessControl {
         address admin,
         address operator,
         string memory baseTokenUri_
-    ) ERC721(name_, symbol_) {
+    ) ERC721(name_, symbol_) EIP712(name_, "1") {
         if (admin == address(0)) revert AdminRequired();
         if (operator == address(0)) revert OperatorRequired();
 
@@ -54,6 +73,47 @@ contract NodeNFT is ERC721, AccessControl {
     function mint(address to, uint256 nodeId, uint32 nodeType, uint64 subscriptionExpiry)
         external
         onlyRole(OPERATOR_ROLE)
+        returns (uint256 tokenId)
+    {
+        tokenId = _mintNode(to, nodeId, nodeType, subscriptionExpiry);
+    }
+
+    function mintWithSignature(MintAuthorization calldata authorization, bytes calldata signature)
+        external
+        returns (uint256 tokenId)
+    {
+        if (authorization.deadline < block.timestamp) revert MintAuthorizationExpired();
+        if (_usedMintNonces[authorization.nonce]) revert MintNonceUsed();
+
+        bytes32 digest = _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    MINT_AUTHORIZATION_TYPEHASH,
+                    authorization.to,
+                    authorization.nodeId,
+                    authorization.nodeType,
+                    authorization.subscriptionExpiry,
+                    authorization.nonce,
+                    authorization.deadline
+                )
+            )
+        );
+        address signer = ECDSA.recover(digest, signature);
+        if (!hasRole(MINT_AUTHORIZER_ROLE, signer) && !hasRole(OPERATOR_ROLE, signer)) {
+            revert MintSignerUnauthorized();
+        }
+
+        _usedMintNonces[authorization.nonce] = true;
+        tokenId =
+            _mintNode(authorization.to, authorization.nodeId, authorization.nodeType, authorization.subscriptionExpiry);
+    }
+
+    function usedMintNonces(bytes32 nonce) external view returns (bool used) {
+        return _usedMintNonces[nonce];
+    }
+
+    function _mintNode(address to, uint256 nodeId, uint32 nodeType, uint64 subscriptionExpiry)
+        private
         returns (uint256 tokenId)
     {
         if (to == address(0)) revert ToRequired();
