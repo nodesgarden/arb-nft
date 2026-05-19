@@ -19,3 +19,6 @@ docs/
 # Local planning docs (not part of contract repo)
 PLAN.md
 REQUEST.md
+
+# Local worktrees
+.worktrees/
