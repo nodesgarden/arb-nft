@@ -47,10 +47,12 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
 
     mapping(uint256 tokenId => NodeData) private _nodeDataByTokenId;
     mapping(uint256 nodeId => uint256 tokenId) private _tokenIdByNodeId;
+    mapping(uint256 nodeId => bool burned) private _burnedNodeIds;
     mapping(bytes32 nonce => bool used) private _usedMintNonces;
 
     event BaseURIUpdated(string oldBaseURI, string newBaseURI);
     event NodeMinted(uint256 indexed tokenId, uint256 indexed nodeId, address indexed to);
+    event NodeBurned(uint256 indexed tokenId, uint256 indexed nodeId, address indexed owner);
     event SubscriptionExtended(uint256 indexed tokenId, uint64 oldExpiry, uint64 newExpiry);
     event NodeTransferSync(uint256 indexed nodeId, address indexed from, address indexed to);
 
@@ -120,7 +122,7 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
         if (nodeId == 0) revert NodeIdRequired();
         if (nodeType == 0) revert NodeTypeRequired();
         if (subscriptionExpiry <= block.timestamp) revert ExpiryInPast();
-        if (_tokenIdByNodeId[nodeId] != 0) revert NodeAlreadyMinted();
+        if (_tokenIdByNodeId[nodeId] != 0 || _burnedNodeIds[nodeId]) revert NodeAlreadyMinted();
 
         tokenId = _nextTokenId++;
         _tokenIdByNodeId[nodeId] = tokenId;
@@ -163,8 +165,18 @@ contract NodeNFT is ERC721, AccessControl, EIP712 {
         emit BaseURIUpdated(oldBaseURI, newBaseURI);
     }
 
-    function burn(uint256) external pure {
-        revert BurnDisabled();
+    function burn(uint256 tokenId) external {
+        address owner = _ownerOf(tokenId);
+        if (owner == address(0)) revert TokenNotMinted();
+        _checkAuthorized(owner, msg.sender, tokenId);
+
+        uint256 nodeId = _nodeDataByTokenId[tokenId].nodeId;
+        delete _nodeDataByTokenId[tokenId];
+        delete _tokenIdByNodeId[nodeId];
+        _burnedNodeIds[nodeId] = true;
+
+        _burn(tokenId);
+        emit NodeBurned(tokenId, nodeId, owner);
     }
 
     function _baseURI() internal view override returns (string memory) {

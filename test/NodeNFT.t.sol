@@ -134,12 +134,12 @@ contract NodeNFTTest is Test {
         nft.transferFrom(user1, user2, tokenId);
     }
 
-    function testBurnIsDisabled() public {
+    function testBurnRejectsUnknownToken() public {
         vm.prank(operator);
-        uint256 tokenId = nft.mint(user1, 600, 1, uint64(block.timestamp + 10 days));
+        nft.mint(user1, 600, 1, uint64(block.timestamp + 10 days));
 
-        vm.expectRevert(BurnDisabled.selector);
-        nft.burn(tokenId);
+        vm.expectRevert(TokenNotMinted.selector);
+        nft.burn(999);
     }
 
     error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
@@ -147,7 +147,6 @@ contract NodeNFTTest is Test {
     error OperatorRequired();
     error NodeTypeRequired();
     error TokenNotMinted();
-    error BurnDisabled();
 
     event BaseURIUpdated(string oldBaseURI, string newBaseURI);
     event NodeTransferSync(uint256 indexed nodeId, address indexed from, address indexed to);

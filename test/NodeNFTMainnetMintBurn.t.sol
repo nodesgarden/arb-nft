@@ -107,6 +107,59 @@ contract NodeNFTMainnetMintBurnTest is Test {
         nft.mintWithSignature(authorization, _sign(authorization, mintAuthorizerKey));
     }
 
+    function testOwnerCanBurnToReveal() public {
+        uint256 tokenId = _operatorMint(user1, 700, 117);
+
+        vm.prank(user1);
+        vm.expectEmit(true, true, true, true);
+        emit NodeBurned(tokenId, 700, user1);
+        nft.burn(tokenId);
+
+        assertEq(nft.tokenIdByNodeId(700), 0);
+        vm.expectRevert();
+        nft.ownerOf(tokenId);
+        vm.expectRevert(TokenNotMinted.selector);
+        nft.nodeData(tokenId);
+    }
+
+    function testApprovedOperatorCanBurnToReveal() public {
+        uint256 tokenId = _operatorMint(user1, 701, 117);
+
+        vm.prank(user1);
+        nft.approve(user2, tokenId);
+
+        vm.prank(user2);
+        vm.expectEmit(true, true, true, true);
+        emit NodeBurned(tokenId, 701, user1);
+        nft.burn(tokenId);
+
+        assertEq(nft.tokenIdByNodeId(701), 0);
+    }
+
+    function testUnrelatedWalletCannotBurnToReveal() public {
+        uint256 tokenId = _operatorMint(user1, 702, 117);
+
+        vm.prank(user2);
+        vm.expectRevert();
+        nft.burn(tokenId);
+    }
+
+    function testBurnedNodeIdCannotBeReminted() public {
+        uint256 tokenId = _operatorMint(user1, 703, 117);
+
+        vm.prank(user1);
+        nft.burn(tokenId);
+
+        vm.prank(operator);
+        vm.expectRevert(NodeAlreadyMinted.selector);
+        nft.mint(user2, 703, 117, uint64(block.timestamp + 30 days));
+    }
+
+    function _operatorMint(address to, uint256 nodeId, uint32 nodeType) private returns (uint256 tokenId) {
+        vm.prank(operator);
+        tokenId = nft.mint(to, nodeId, nodeType, uint64(block.timestamp + 30 days));
+    }
+
     function _authorization(address to, uint256 nodeId, uint32 nodeType, uint64 expiry, string memory nonceSeed)
         private
         view
@@ -158,6 +211,9 @@ contract NodeNFTMainnetMintBurnTest is Test {
     error NodeIdRequired();
     error NodeTypeRequired();
     error ExpiryInPast();
+    error NodeAlreadyMinted();
+    error TokenNotMinted();
 
     event NodeMinted(uint256 indexed tokenId, uint256 indexed nodeId, address indexed to);
+    event NodeBurned(uint256 indexed tokenId, uint256 indexed nodeId, address indexed owner);
 }
