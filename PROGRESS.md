@@ -7,6 +7,84 @@
 - Milestone 2 Rails backend/UI/indexer: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof: completed.
 - Milestone 2 submission package: ready.
+- Milestone 3 contracts: implemented on `feat/milestone-3-contracts`.
+- Milestone 3 Rails integration: implemented on `/Users/ilyalebedev/projects/nodes.garden` `feat/milestone-3-rails`.
+- Milestone 3 Sepolia rehearsal contracts: deployed, verified, and smoke-tested.
+
+## Milestone 3 Completed Locally
+
+In this repo:
+
+1. [x] Add EIP-712 `MintAuthorization` struct and typehash.
+2. [x] Add `MINT_AUTHORIZER_ROLE`.
+3. [x] Add `mintWithSignature` for user-paid mints after off-chain purchase.
+4. [x] Keep `OPERATOR_ROLE` minting for backend/operator workflows.
+5. [x] Track used mint nonces.
+6. [x] Enable owner/approved burn for burn-to-reveal.
+7. [x] Emit `NodeBurned(tokenId, nodeId, owner)`.
+8. [x] Prevent re-minting a burned `nodeId`.
+9. [x] Add Foundry tests for signed mint and burn flows.
+10. [x] Add mainnet deployment scripts.
+11. [x] Add Sepolia smoke script for mint/list/cancel/burn.
+12. [x] Deploy and verify fresh Milestone 3 Sepolia `NodeNFT`.
+13. [x] Deploy and verify fresh Milestone 3 Sepolia `NodeNFTMarketplace`.
+14. [x] Run Sepolia smoke script successfully.
+
+In `nodes.garden` branch `feat/milestone-3-rails`:
+
+1. [x] Add network-aware Sepolia/mainnet marketplace config.
+2. [x] Scope marketplace listings/events/cursors by network.
+3. [x] Add `node_nfts` lifecycle fields.
+4. [x] Add `node_nft_mint_authorizations`.
+5. [x] Index `NodeMinted`, `NodeBurned`, and `NodeTransferSync`.
+6. [x] Mark mint authorizations used after confirmed `NodeMinted`.
+7. [x] Set `keys_revealed` after confirmed `NodeBurned`.
+8. [x] Hide private key/mnemonic fields until burn reveal.
+9. [x] Add `Mint Node NFT` dashboard action.
+10. [x] Add `Burn to Reveal Key` dashboard action.
+11. [x] Chunk RPC log sync ranges.
+12. [x] Configure local Rails `.env` for Sepolia smoke testing.
+
+Latest verification:
+
+- `arb-nft`: `forge fmt --check`, `forge build`, and `forge test --offline --no-auto-detect` are the required pre-PR checks.
+- `nodes.garden`: targeted RSpec for marketplace/NFT changes passed with `36 examples, 0 failures`.
+- `nodes.garden`: `npm run build` passed.
+- `nodes.garden`: local Rails sync against Sepolia indexed smoke events after chunked log sync.
+
+## Milestone 3 Sepolia Deployment Evidence
+
+`NodeNFT`:
+
+- address: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+- deployment tx: `0xeebe17b06d6f83727a4e9b5c657d935b09c8aed73dbd19f6faec480486db8626`
+- deployment block: `269610905`
+- explorer: `https://sepolia.arbiscan.io/address/0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F#code`
+
+`NodeNFTMarketplace`:
+
+- address: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
+- deployment tx: `0x6fb15f13c6b0d371b9e9b8f31bf5e3d345c2ee8d63cf3dfc8bd617eddea58920`
+- deployment block: `269611269`
+- explorer: `https://sepolia.arbiscan.io/address/0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0#code`
+
+Smoke transaction sequence:
+
+- mint: `0x72171f19be419535a1e7e3e92b88e8df4f5978a7c380cc9b13fe2dc5b6cdfb89`
+- approve marketplace: `0x021c7981d5b99bf3c20dcb9444b928bce1bb207de6f197161e1bd23b3b95a472`
+- list: `0x622c14da0eb30065f465562ea0bb29116e962221a06710466a97b5dcf3ef2d8f`
+- cancel listing: `0x59d13834f7de5dcaeeadbd38d763dd16f38f4c9237a2bb04ecacc51f1a39ad6f`
+- burn: `0x983eb977dfe3e3470285641197563c6437671f6088fa0c05eb60f21a781ee0e1`
+
+## Milestone 3 Remaining
+
+1. [ ] Run real browser UI smoke on Sepolia from `nodes.garden`.
+2. [ ] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
+3. [ ] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
+4. [ ] Configure production Rails mainnet env.
+5. [ ] Enable controlled user cohort.
+6. [ ] Track KPI counts for `>=300` mints, `>=100` trades, and `>=200` contract-interacting MAUs.
+7. [ ] Coordinate public launch announcement with Arbitrum.
 
 ## Milestone 2 Completed Locally
 

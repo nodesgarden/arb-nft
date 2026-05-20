@@ -1,6 +1,6 @@
-# Arbitrum Sepolia Deployment Runbook
+# Arbitrum Deployment Runbook
 
-This project deploys `NodeNFT` and `NodeNFTMarketplace` to Arbitrum Sepolia with Foundry.
+This project deploys `NodeNFT` and `NodeNFTMarketplace` to Arbitrum Sepolia and Arbitrum mainnet with Foundry.
 
 Milestone 1 has already been deployed, verified, submitted to Arbitrum, and accepted. This runbook is retained for reproducibility and future testnet operations against the Milestone 1 contract.
 
@@ -9,7 +9,8 @@ Current handoff:
 - `NodeNFT` is already deployed at the accepted address below.
 - `NodeNFTMarketplace` is deployed and verified at the accepted marketplace address below.
 - Rails marketplace code is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
-- After marketplace deployment, the target Rails env must be configured with the marketplace address and deployment block before the indexer can run.
+- Milestone 3 signed mint and burn-to-reveal changes are implemented.
+- Fresh Milestone 3 Sepolia contracts are deployed and verified for rehearsal before mainnet.
 
 Accepted Milestone 1 contract:
 
@@ -28,12 +29,27 @@ Milestone 2 marketplace contract:
 - constructor `NFT_CONTRACT`: `0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392`
 - explorer: `https://sepolia.arbiscan.io/address/0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A#code`
 
+Milestone 3 Sepolia rehearsal contracts:
+
+- network: `Arbitrum Sepolia`
+- chain id: `421614`
+- `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+- `NodeNFT` deployment tx: `0xeebe17b06d6f83727a4e9b5c657d935b09c8aed73dbd19f6faec480486db8626`
+- `NodeNFT` deployment block: `269610905`
+- `NodeNFT` explorer: `https://sepolia.arbiscan.io/address/0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F#code`
+- `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
+- `NodeNFTMarketplace` deployment tx: `0x6fb15f13c6b0d371b9e9b8f31bf5e3d345c2ee8d63cf3dfc8bd617eddea58920`
+- `NodeNFTMarketplace` deployment block: `269611269`
+- `NodeNFTMarketplace` constructor `NFT_CONTRACT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+- `NodeNFTMarketplace` explorer: `https://sepolia.arbiscan.io/address/0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0#code`
+
 ## Required Environment Variables
 
 Contract constructor inputs:
 
 - `ADMIN_ADDRESS`
 - `OPERATOR_ADDRESS`
+- `MINT_AUTHORIZER_ADDRESS`
 - `NFT_NAME`
 - `NFT_SYMBOL`
 - `BASE_URI`
@@ -60,10 +76,21 @@ Post-deploy operation inputs:
 
 Rails marketplace inputs in `nodes.garden`:
 
+- `NFT_MARKETPLACE_NETWORK`
 - `ARB_SEPOLIA_RPC_URL`
+- `ARB_SEPOLIA_WALLET_RPC_URL`
 - `NODE_NFT_CONTRACT_ADDRESS`
+- `NODE_NFT_DEPLOYMENT_BLOCK`
 - `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS`
 - `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK`
+- `NODE_NFT_MINT_AUTHORIZER_PRIVATE_KEY`
+- `ARB_MAINNET_RPC_URL`
+- `ARB_MAINNET_WALLET_RPC_URL`
+- `NODE_NFT_MAINNET_CONTRACT_ADDRESS`
+- `NODE_NFT_MAINNET_DEPLOYMENT_BLOCK`
+- `NODE_NFT_MAINNET_MARKETPLACE_CONTRACT_ADDRESS`
+- `NODE_NFT_MAINNET_MARKETPLACE_DEPLOYMENT_BLOCK`
+- `NODE_NFT_MAINNET_MINT_AUTHORIZER_PRIVATE_KEY`
 - optional `NFT_MARKETPLACE_SYNC_CRON`
 
 ## Suggested Local Export
@@ -75,6 +102,7 @@ export ETHERSCAN_API_KEY="..."
 
 export ADMIN_ADDRESS="0x..."
 export OPERATOR_ADDRESS="0x..."
+export MINT_AUTHORIZER_ADDRESS="0x..."
 export NFT_NAME="nodes.garden Node NFT"
 export NFT_SYMBOL="NODE"
 export BASE_URI="https://nodes.garden/api/nft/"
@@ -97,6 +125,9 @@ export MARKETPLACE_CANCELLATION_BATCH_FILE="script/examples/marketplace-cancella
 - network: Arbitrum Sepolia
 - chain id: `421614`
 - explorer: `https://sepolia.arbiscan.io`
+- mainnet network: Arbitrum
+- mainnet chain id: `42161`
+- mainnet explorer: `https://arbiscan.io`
 
 ## Pre-Deploy Verification
 
@@ -129,6 +160,8 @@ Expected outputs:
 - broadcast artifact under `broadcast/`
 - verification submission status
 
+Mainnet uses the same script with `ARB_MAINNET_RPC_URL`, the mainnet deployer key, and `--chain 42161` where needed for verification tooling.
+
 ## Deploy Marketplace
 
 Deploy the marketplace after `NodeNFT` exists. The script reads `NFT_CONTRACT` and stores that address immutably.
@@ -151,9 +184,11 @@ After deployment:
 
    ```sh
    export ARB_SEPOLIA_RPC_URL="https://your-arbitrum-sepolia-rpc"
-   export NODE_NFT_CONTRACT_ADDRESS="0x1e678Ced5Ff9571a5C4337D4742D4AF0C8830392"
-   export NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS="0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A"
-   export NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK="268201592"
+   export NODE_NFT_CONTRACT_ADDRESS="0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F"
+   export NODE_NFT_DEPLOYMENT_BLOCK="269610905"
+   export NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS="0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0"
+   export NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK="269611269"
+   export NODE_NFT_MINT_AUTHORIZER_PRIVATE_KEY="0x..."
    ```
 
 2. Apply the marketplace Rails migration in the target env if not already applied:
@@ -166,7 +201,7 @@ After deployment:
 3. Verify the Rails marketplace stack:
 
    ```sh
-   rbenv exec bundle exec rspec spec/models/node_nft_spec.rb spec/services/nft_marketplace/event_applier_spec.rb spec/services/nft_marketplace/syncer_spec.rb spec/requests/dashboard/marketplace_spec.rb
+   rbenv exec bundle exec rspec spec/models/node_nft_spec.rb spec/models/node_nft_mint_authorization_spec.rb spec/services/nft_marketplace spec/services/node_nfts spec/requests/dashboard/marketplace_spec.rb spec/requests/dashboard/node_nfts_spec.rb
    npm run build
    ```
 
@@ -203,6 +238,25 @@ forge verify-contract \
   <DEPLOYED_MARKETPLACE_ADDRESS> \
   src/NodeNFTMarketplace.sol:NodeNFTMarketplace
 ```
+
+## Milestone 3 Sepolia Smoke
+
+The smoke script expects the freshly deployed Milestone 3 contracts and a funded owner/signer wallet. It mints with signature, approves/list/cancels through the marketplace, then burns the token.
+
+```sh
+forge script script/SmokeTestMilestone3Sepolia.s.sol:SmokeTestMilestone3Sepolia \
+  --rpc-url "$ARB_SEPOLIA_RPC_URL" \
+  --broadcast \
+  -vvv
+```
+
+Recorded smoke txs:
+
+- mint: `0x72171f19be419535a1e7e3e92b88e8df4f5978a7c380cc9b13fe2dc5b6cdfb89`
+- approve: `0x021c7981d5b99bf3c20dcb9444b928bce1bb207de6f197161e1bd23b3b95a472`
+- list: `0x622c14da0eb30065f465562ea0bb29116e962221a06710466a97b5dcf3ef2d8f`
+- cancel: `0x59d13834f7de5dcaeeadbd38d763dd16f38f4c9237a2bb04ecacc51f1a39ad6f`
+- burn: `0x983eb977dfe3e3470285641197563c6437671f6088fa0c05eb60f21a781ee0e1`
 
 ## Post-Deploy Checklist
 

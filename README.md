@@ -1,6 +1,6 @@
 # Node NFT — nodes.garden
 
-This repository contains the nodes.garden `NodeNFT` smart contract and the Milestone 2 testnet marketplace contract for Arbitrum Sepolia.
+This repository contains the nodes.garden `NodeNFT` smart contract and the fixed-price `NodeNFTMarketplace` contract.
 Each NFT represents a transferable node subscription access right while private node data and subscription lifecycle details remain off-chain.
 
 Milestone 1 has been submitted to Arbitrum and accepted. The accepted deployment and operational evidence are recorded in [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md).
@@ -13,6 +13,11 @@ Current state as of the latest handoff:
 - The Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Target Rails env configuration, live sync, and KPI proof generation are completed: `303` listing-created events and `101` purchase events indexed.
 - Milestone 2 submission package is ready in [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md).
+- Milestone 3 signed mint and burn-to-reveal contract changes are implemented on `feat/milestone-3-contracts`.
+- Milestone 3 Rails mint/burn integration is implemented in `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- Fresh Milestone 3 contracts are deployed and verified on Arbitrum Sepolia for rehearsal:
+  - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+  - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
 
 ## Contract Model
 
@@ -24,7 +29,7 @@ The NFT contract is intentionally minimal:
 - `subscriptionExpiry` stores the current subscription `end_date` as a unix timestamp
 - `tokenURI` resolves to `baseURI + tokenId`
 - `NodeTransferSync` is emitted on transfers for backend indexing
-- burn is intentionally disabled in Milestone 1
+- burn is enabled in Milestone 3 for `Burn to Reveal Key`
 
 Tier selection, tariff plans, lifecycle status, pricing, and all private node credentials remain off-chain.
 
@@ -35,6 +40,13 @@ The Milestone 2 marketplace contract adds fixed-price native ETH escrow:
 - buyers purchase with exact native ETH, paying the seller directly
 - Rails indexes marketplace events and applies backend ownership changes after confirmed purchase
 - there is no protocol fee in Milestone 2
+
+The Milestone 3 contract update adds the mainnet launch flow:
+
+- Rails signs an EIP-712 `MintAuthorization`
+- users pay gas and call `mintWithSignature` from their wallet
+- burn emits `NodeBurned`, which Rails indexes before revealing private node keys
+- burned node ids cannot be re-minted
 
 ## Milestone 1 Scope
 
@@ -72,6 +84,24 @@ Out of scope:
 - mainnet deployment
 - public marketplace launch controls
 
+## Milestone 3 Scope
+
+Included:
+
+- signed user-paid minting
+- burn-to-reveal event support
+- Arbitrum Sepolia rehearsal deployment and smoke script
+- Arbitrum mainnet deployment scripts
+- Rails mint/burn dashboard integration in `nodes.garden`
+
+Still pending:
+
+- real browser Sepolia UI smoke across mint, list, buy, and burn
+- Arbitrum mainnet deployment
+- production Rails mainnet env configuration
+- controlled cohort onboarding
+- KPI tracking for mints, trades, and contract-interacting MAUs
+
 ## Repository Guide
 
 - [CONTRACT_SPEC.md](CONTRACT_SPEC.md) defines the canonical contract semantics
@@ -88,6 +118,7 @@ The repo includes reproducible Foundry scripts for milestone operations:
 
 - `script/DeployNodeNFT.s.sol` deploys the contract
 - `script/DeployNodeNFTMarketplace.s.sol` deploys the marketplace for an existing `NodeNFT`
+- `script/SmokeTestMilestone3Sepolia.s.sol` runs the Sepolia mint/list/cancel/burn rehearsal
 - `script/MintNodeNFTBatch.s.sol` performs operator-driven batch minting from a JSON file
 - `script/TransferNodeNFTBatch.s.sol` performs owner-driven batch transfers from a JSON file
 - `script/CreateMarketplaceListingsBatch.s.sol` approves and lists owned NFTs from a JSON file

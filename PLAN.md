@@ -7,6 +7,79 @@ Current status:
 - Milestone 2 Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof are completed.
 - Milestone 2 submission package is ready.
+- Milestone 3 contract changes are implemented on branch `feat/milestone-3-contracts`.
+- Milestone 3 Rails integration is implemented on `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- New Milestone 3 Sepolia contracts are deployed and verified for end-to-end testing before mainnet deployment.
+
+## Milestone 3 Plan — Mainnet Deployment & Initial User Onboarding
+
+Goal: deploy the Node NFT + marketplace stack to Arbitrum mainnet after a fresh Arbitrum Sepolia rehearsal, then integrate mint and burn flows into the nodes.garden user journey.
+
+Success criteria from the grant:
+
+- Deploy `NodeNFT` and `NodeNFTMarketplace` to Arbitrum mainnet.
+- Integrate nodes.garden user flow: `Mint Node NFT` and `Burn to Reveal Key`.
+- Onboard initial active user cohort.
+- Provide basic analytics for NFT mints, trades, and MAUs.
+- Reach at least `300` mainnet mints, `100` marketplace trades, and `200` contract-interacting MAUs.
+- Coordinate public launch announcement with Arbitrum.
+
+Implemented in `arb-nft`:
+
+- `NodeNFT` now supports signed user-paid minting through `mintWithSignature`.
+- `MINT_AUTHORIZER_ROLE` signs EIP-712 `MintAuthorization` payloads.
+- `OPERATOR_ROLE` can still perform backend/operator minting.
+- Burn is enabled for token owners and approved operators.
+- `NodeBurned(tokenId, nodeId, owner)` is emitted for Rails reveal indexing.
+- A burned `nodeId` cannot be re-minted.
+- Mainnet deployment scripts are prepared.
+- Arbitrum Sepolia smoke script covers mint, marketplace list, cancel, and burn.
+
+Implemented in `nodes.garden` branch `feat/milestone-3-rails`:
+
+- network-aware Sepolia/mainnet marketplace configuration
+- network-scoped listings, events, cursors, and node NFT records
+- `node_nfts` lifecycle states: `mint_pending`, `minted`, `keys_revealed`
+- mint authorization persistence and EIP-712 signature generation
+- `NodeMinted`, `NodeBurned`, and transfer event indexing
+- node data masking before burn reveal, including pending mint state
+- dashboard `Mint Node NFT` and `Burn to Reveal Key` actions
+- chunked RPC log sync to avoid provider log-range limits
+
+Current Sepolia rehearsal deployment:
+
+1. `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+2. `NodeNFT` deployment tx: `0xeebe17b06d6f83727a4e9b5c657d935b09c8aed73dbd19f6faec480486db8626`
+3. `NodeNFT` deployment block: `269610905`
+4. `NodeNFT` explorer: `https://sepolia.arbiscan.io/address/0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F#code`
+5. `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
+6. `NodeNFTMarketplace` deployment tx: `0x6fb15f13c6b0d371b9e9b8f31bf5e3d345c2ee8d63cf3dfc8bd617eddea58920`
+7. `NodeNFTMarketplace` deployment block: `269611269`
+8. `NodeNFTMarketplace` explorer: `https://sepolia.arbiscan.io/address/0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0#code`
+
+Sepolia smoke evidence:
+
+- mint tx: `0x72171f19be419535a1e7e3e92b88e8df4f5978a7c380cc9b13fe2dc5b6cdfb89`
+- approve tx: `0x021c7981d5b99bf3c20dcb9444b928bce1bb207de6f197161e1bd23b3b95a472`
+- list tx: `0x622c14da0eb30065f465562ea0bb29116e962221a06710466a97b5dcf3ef2d8f`
+- cancel tx: `0x59d13834f7de5dcaeeadbd38d763dd16f38f4c9237a2bb04ecacc51f1a39ad6f`
+- burn tx: `0x983eb977dfe3e3470285641197563c6437671f6088fa0c05eb60f21a781ee0e1`
+
+Remaining before mainnet:
+
+1. Run a real browser UI smoke against the new Sepolia contracts:
+   - purchase or prepare an exportable node
+   - mint Node NFT from the node page
+   - sync and confirm `NodeMinted`
+   - list on marketplace
+   - buy from another wallet
+   - sync and confirm Rails node ownership transfer
+   - burn to reveal keys
+   - sync and confirm `keys_revealed`
+2. Deploy `NodeNFT` and `NodeNFTMarketplace` to Arbitrum mainnet.
+3. Configure production Rails mainnet env.
+4. Launch controlled cohort.
+5. Track mainnet KPI progress.
 
 ## Milestone 2 Resume Plan — Testnet Node NFT Marketplace
 

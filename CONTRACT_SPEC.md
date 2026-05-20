@@ -5,15 +5,22 @@
 `NodeNFT` is an ERC-721 contract for nodes.garden.
 Each token represents a transferable subscription access right for a backend-managed node.
 
-Milestone 1 keeps the NFT model deliberately small. The contract is an ownership and expiry registry, not a full mirror of the Rails domain model.
+Milestone 1 kept the NFT model deliberately small. The contract is an ownership and expiry registry, not a full mirror of the Rails domain model.
 
 Milestone 2 adds `NodeNFTMarketplace`, a separate fixed-price escrow contract for Arbitrum Sepolia testnet marketplace proof.
+
+Milestone 3 adds signed user-paid minting and burn-to-reveal support for the mainnet launch flow.
 
 Implementation state:
 
 - `NodeNFT` is deployed and accepted for Milestone 1.
 - `NodeNFTMarketplace` is implemented, deployed, and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
-- Rails marketplace indexing/UI is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264, but target env configuration/live sync is still pending.
+- Rails marketplace indexing/UI is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
+- Milestone 3 contract changes are implemented on `feat/milestone-3-contracts`.
+- Milestone 3 Rails integration is implemented on `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- Fresh Milestone 3 Sepolia contracts are deployed and verified:
+  - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+  - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
 
 ## Canonical Field Mapping
 
@@ -32,11 +39,14 @@ Milestone 1 does not store `tier_id`, tariff plan, lifecycle state, or pricing o
 - `OPERATOR_ROLE`
   - mints NFTs
   - extends subscriptions after off-chain payment or admin workflow
+- `MINT_AUTHORIZER_ROLE`
+  - signs EIP-712 mint authorizations for user-paid mints
 
 The intended operational model is:
 
 - admin = long-lived control wallet or multisig later
 - operator = hot wallet used by nodes.garden operational backend
+- mint authorizer = signing wallet used by Rails to authorize `mintWithSignature`
 
 ## Contract Behavior
 
@@ -59,6 +69,34 @@ Effects:
 - stores `NodeData`
 - maps `nodeId -> tokenId`
 - mints the ERC-721 token
+- emits `NodeMinted`
+
+### Signed Minting
+
+`mintWithSignature(MintAuthorization authorization, bytes signature)`
+
+Milestone 3 uses this function for user-paid minting from the nodes.garden dashboard after an off-chain purchase has created an exportable node.
+
+`MintAuthorization` fields:
+
+- `to`: wallet that will receive the NFT
+- `nodeId`: Rails `nodes.id`
+- `nodeType`: Rails `nodes.project_id`
+- `subscriptionExpiry`: current subscription expiry as a unix timestamp
+- `nonce`: one-time `bytes32`
+- `deadline`: unix timestamp after which the authorization is invalid
+
+Rules:
+
+- `deadline` must not be expired
+- `nonce` must not have been used
+- recovered signer must have `MINT_AUTHORIZER_ROLE` or `OPERATOR_ROLE`
+- all normal mint validation rules still apply
+
+Effects:
+
+- marks the nonce used
+- mints the NFT to `authorization.to`
 - emits `NodeMinted`
 
 ### Subscription Extension
@@ -96,14 +134,28 @@ On every non-mint, non-burn ownership transfer, the contract emits `NodeTransfer
 
 ### Burn
 
-`burn(uint256)` always reverts in Milestone 1.
+`burn(uint256 tokenId)`
 
-This is intentional. Burn-to-reveal or other burn flows are out of scope for this milestone.
+Milestone 1 disabled burn. Milestone 3 enables burn for the dashboard `Burn to Reveal Key` flow.
+
+Rules:
+
+- token must exist
+- caller must be token owner or an approved operator
+
+Effects:
+
+- deletes token data
+- clears the `nodeId -> tokenId` lookup
+- marks the `nodeId` burned so it cannot be minted again
+- burns the ERC-721 token
+- emits `NodeBurned`
 
 ## Events
 
 - `BaseURIUpdated(string oldBaseURI, string newBaseURI)`
 - `NodeMinted(uint256 indexed tokenId, uint256 indexed nodeId, address indexed to)`
+- `NodeBurned(uint256 indexed tokenId, uint256 indexed nodeId, address indexed owner)`
 - `SubscriptionExtended(uint256 indexed tokenId, uint64 oldExpiry, uint64 newExpiry)`
 - `NodeTransferSync(uint256 indexed nodeId, address indexed from, address indexed to)`
 
@@ -113,6 +165,7 @@ Custom errors are used for contract-owned validation paths:
 
 - `AdminRequired()`
 - `OperatorRequired()`
+- `MintAuthorizerRequired()`
 - `ToRequired()`
 - `NodeIdRequired()`
 - `NodeTypeRequired()`
@@ -120,7 +173,9 @@ Custom errors are used for contract-owned validation paths:
 - `NodeAlreadyMinted()`
 - `TokenNotMinted()`
 - `ExpiryNotExtended()`
-- `BurnDisabled()`
+- `MintAuthorizationExpired()`
+- `MintNonceUsed()`
+- `MintSignerUnauthorized()`
 
 OpenZeppelin access-control reverts still apply for unauthorized role usage.
 
@@ -252,10 +307,22 @@ Rails records:
   - raw log
 - `nft_marketplace_sync_cursors`
   - network
+  - contract address
   - last processed block
 - `node_nfts`
+  - network
+  - mint status: `mint_pending`, `minted`, `keys_revealed`
   - `owner_address`
+  - key reveal/burn timestamps
   - last synced block and tx
+- `node_nft_mint_authorizations`
+  - node id
+  - network
+  - wallet address
+  - nonce
+  - deadline
+  - signature
+  - used timestamp
 
 Rails event handling:
 
@@ -272,6 +339,15 @@ Rails event handling:
   - updates `NodeNft.owner_address`
 - `NodeTransferSync`
   - updates `NodeNft.owner_address`
+- `NodeMinted`
+  - creates or updates `NodeNft`
+  - sets `mint_status` to `minted`
+  - records owner address and sync metadata
+  - marks the matching mint authorization used
+- `NodeBurned`
+  - sets `mint_status` to `keys_revealed`
+  - locks the NFT state from marketplace eligibility
+  - records burn tx and reveal timestamps
 
 Rails listing eligibility:
 
@@ -281,11 +357,15 @@ Rails listing eligibility:
 - Rails `NodeNft.owner_address` must match the current user's wallet
 - node subscription must be active
 
-No Milestone 3 semantics are included:
+Milestone 3 semantics now included:
 
-- no mainnet
+- signed user-paid minting
+- burn-to-reveal event path
+- Sepolia/mainnet network-scoped indexing
+
+Still out of scope:
+
 - no public launch
 - no protocol fee
-- no stablecoin payments
-- no burn-to-reveal
 - no subscription renewal payment flow
+- no ERC-20 or stablecoin marketplace payments
