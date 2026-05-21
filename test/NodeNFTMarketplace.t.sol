@@ -11,6 +11,7 @@ contract NodeNFTMarketplaceTest is Test {
 
     address private admin = address(0xA11CE);
     address private operator = address(0xB0B);
+    address private mintAuthorizer = address(0xD00D);
     address private seller = address(0xCAFE);
     address private buyer = address(0xF00D);
     address private stranger = address(0xBAD);
@@ -18,7 +19,9 @@ contract NodeNFTMarketplaceTest is Test {
     uint256 private constant PRICE = 0.25 ether;
 
     function setUp() public {
-        nft = new NodeNFT("nodes.garden Node NFT", "NODE", admin, operator, "https://api.nodes.garden/nft/");
+        nft = new NodeNFT(
+            "nodes.garden Node NFT", "NODE", admin, operator, mintAuthorizer, "https://api.nodes.garden/nft/"
+        );
         marketplace = new NodeNFTMarketplace(address(nft));
 
         vm.deal(seller, 10 ether);

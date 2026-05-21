@@ -8,8 +8,12 @@ Current Rails handoff:
 - metadata still lives in the `nodes.garden` Rails app
 - marketplace dashboard/API endpoints now live in `nodes.garden` `main` via PR #264
 - marketplace actions are prepared by Rails but executed directly from the user's wallet
-- Rails state updates only after confirmed Arbitrum Sepolia events are indexed; target env marketplace contract configuration is still pending
+- Rails state updates only after confirmed Arbitrum events are indexed
 - deployed marketplace contract: `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`
+- Milestone 3 mint/burn dashboard endpoints are implemented in `nodes.garden` branch `feat/milestone-3-rails`
+- Milestone 3 Sepolia rehearsal contracts:
+  - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+  - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
 
 ## Endpoint
 
@@ -130,3 +134,69 @@ Indexer behavior:
 - `NftMarketplace::SyncJob` polls `ListingCreated`, `ListingCancelled`, `ListingPurchased`, and `NodeTransferSync`
 - events are stored idempotently by `tx_hash + log_index`
 - purchase events find or create the buyer by wallet address and transfer Rails `Node#user` to that buyer
+
+## Milestone 3 Node NFT Rails Endpoints
+
+These endpoints are implemented in `nodes.garden` branch `feat/milestone-3-rails`.
+They prepare browser wallet transactions; Rails never broadcasts user wallet transactions itself.
+
+Routes:
+
+- `GET /dashboard/nodes/:id/nft_mint_authorization`
+- `GET /dashboard/nodes/:id/nft_burn_transaction`
+
+Access:
+
+- current dashboard user must own the node
+- connected wallet must match `current_user.wallet_address`
+- minting is only available for exportable nodes that contain key material
+- existing non-NFT nodes keep the old data behavior
+- NFT-backed nodes hide private key and mnemonic fields until a confirmed `NodeBurned` event is indexed
+
+Mint transaction preparation:
+
+- Rails validates the node has an active subscription
+- Rails rejects nodes that are already minted or keys-revealed
+- Rails creates or updates `NodeNft` as `mint_pending`
+- Rails creates `NodeNftMintAuthorization`
+- Rails signs EIP-712 `MintAuthorization`
+- returned method is `mintWithSignature`
+
+Mint returned JSON includes:
+
+- `chain_id`
+- `chain_name`
+- `contract_address`: `NodeNFT` address
+- `method`: `mintWithSignature`
+- `args`: `[authorizationTuple, signature]`
+- `value`: `0`
+- `node_nft_abi`: minimal ethers ABI
+
+Burn transaction preparation:
+
+- Rails requires an existing minted `NodeNft`
+- Rails verifies `NodeNft.owner_address` matches the current user's wallet
+- returned method is `burn`
+- returned args contain `token_id`
+
+Milestone 3 Sepolia Rails env:
+
+- `NFT_MARKETPLACE_NETWORK=arbitrum_sepolia`
+- `ARB_SEPOLIA_RPC_URL`
+- `ARB_SEPOLIA_WALLET_RPC_URL`
+- `NODE_NFT_CONTRACT_ADDRESS=0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
+- `NODE_NFT_MARKETPLACE_CONTRACT_ADDRESS=0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
+- `NODE_NFT_DEPLOYMENT_BLOCK=269610905`
+- `NODE_NFT_MARKETPLACE_DEPLOYMENT_BLOCK=269611269`
+- `NODE_NFT_MINT_AUTHORIZER_PRIVATE_KEY`
+
+Milestone 3 mainnet Rails env:
+
+- `NFT_MARKETPLACE_NETWORK=arbitrum_mainnet`
+- `ARB_MAINNET_RPC_URL`
+- `ARB_MAINNET_WALLET_RPC_URL`
+- `NODE_NFT_MAINNET_CONTRACT_ADDRESS`
+- `NODE_NFT_MAINNET_MARKETPLACE_CONTRACT_ADDRESS`
+- `NODE_NFT_MAINNET_DEPLOYMENT_BLOCK`
+- `NODE_NFT_MAINNET_MARKETPLACE_DEPLOYMENT_BLOCK`
+- `NODE_NFT_MAINNET_MINT_AUTHORIZER_PRIVATE_KEY`
