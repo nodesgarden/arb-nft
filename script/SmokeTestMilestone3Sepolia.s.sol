@@ -13,8 +13,10 @@ contract SmokeTestMilestone3Sepolia is Script {
         keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
 
     function run() external {
-        uint256 signerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        address owner = vm.addr(signerPrivateKey);
+        uint256 ownerPrivateKey = vm.envUint("OWNER_PRIVATE_KEY");
+        uint256 mintAuthorizerPrivateKey = vm.envUint("MINT_AUTHORIZER_PRIVATE_KEY");
+        address owner = vm.addr(ownerPrivateKey);
+        address mintAuthorizer = vm.addr(mintAuthorizerPrivateKey);
         NodeNFT nodeNft = NodeNFT(vm.envAddress("NFT_CONTRACT"));
         NodeNFTMarketplace marketplace = NodeNFTMarketplace(vm.envAddress("MARKETPLACE_CONTRACT"));
 
@@ -32,9 +34,9 @@ contract SmokeTestMilestone3Sepolia is Script {
             deadline: uint64(block.timestamp + 1 hours)
         });
 
-        bytes memory signature = _sign(nodeNft, authorization, signerPrivateKey);
+        bytes memory signature = _sign(nodeNft, authorization, mintAuthorizerPrivateKey);
 
-        vm.startBroadcast(signerPrivateKey);
+        vm.startBroadcast(ownerPrivateKey);
         uint256 tokenId = nodeNft.mintWithSignature(authorization, signature);
         nodeNft.approve(address(marketplace), tokenId);
         uint256 listingId = marketplace.createListing(tokenId, 0.001 ether);
@@ -43,6 +45,7 @@ contract SmokeTestMilestone3Sepolia is Script {
         vm.stopBroadcast();
 
         console2.log("smoke owner", owner);
+        console2.log("smoke mintAuthorizer", mintAuthorizer);
         console2.log("smoke nodeId", nodeId);
         console2.log("smoke tokenId", tokenId);
         console2.log("smoke listingId", listingId);

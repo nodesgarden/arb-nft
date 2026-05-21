@@ -111,6 +111,7 @@ export NFT_CONTRACT="0x..."
 export MARKETPLACE_CONTRACT="0x..."
 export OPERATOR_PRIVATE_KEY="0x..."
 export OWNER_PRIVATE_KEY="0x..."
+export MINT_AUTHORIZER_PRIVATE_KEY="0x..."
 export BUYER_PRIVATE_KEY="0x..."
 export SELLER_PRIVATE_KEY="0x..."
 export MINT_BATCH_FILE="script/examples/mint-batch.example.json"
@@ -241,7 +242,7 @@ forge verify-contract \
 
 ## Milestone 3 Sepolia Smoke
 
-The smoke script expects the freshly deployed Milestone 3 contracts and a funded owner/signer wallet. It mints with signature, approves/list/cancels through the marketplace, then burns the token.
+The smoke script expects the freshly deployed Milestone 3 contracts, a funded owner wallet, and a mint-authorizer key that matches `MINT_AUTHORIZER_ADDRESS` or another account with `MINT_AUTHORIZER_ROLE`. The owner broadcasts the transactions; the mint authorizer only signs the EIP-712 authorization. It mints with signature, approves/list/cancels through the marketplace, then burns the token.
 
 ```sh
 forge script script/SmokeTestMilestone3Sepolia.s.sol:SmokeTestMilestone3Sepolia \
