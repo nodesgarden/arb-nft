@@ -10,7 +10,7 @@ Current Rails handoff:
 - marketplace actions are prepared by Rails but executed directly from the user's wallet
 - Rails state updates only after confirmed Arbitrum events are indexed
 - deployed marketplace contract: `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`
-- Milestone 3 mint/burn dashboard endpoints are implemented in `nodes.garden` branch `feat/milestone-3-rails`
+- Milestone 3 mint/burn dashboard endpoints are merged into `nodes.garden` `main` via PRs #265-#270
 - Milestone 3 Sepolia rehearsal contracts:
   - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
   - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
@@ -137,7 +137,7 @@ Indexer behavior:
 
 ## Milestone 3 Node NFT Rails Endpoints
 
-These endpoints are implemented in `nodes.garden` branch `feat/milestone-3-rails`.
+These endpoints are implemented in `nodes.garden` `main`.
 They prepare browser wallet transactions; Rails never broadcasts user wallet transactions itself.
 
 Routes:
@@ -150,8 +150,13 @@ Access:
 - current dashboard user must own the node
 - connected wallet must match `current_user.wallet_address`
 - minting is only available for exportable nodes that contain key material
+- minting is gated by the Rails project-level NFT mintability flag
+- newly purchased mintable nodes hide private key and mnemonic fields before mint
+- if the user declines minting, they can reveal keys later; reveal makes the node non-mintable
 - existing non-NFT nodes keep the old data behavior
 - NFT-backed nodes hide private key and mnemonic fields until a confirmed `NodeBurned` event is indexed
+- hidden nodes can show a pending NFT card before they become active/exportable
+- hidden nodes receive an in-app mint-ready notification once they become active/exportable
 
 Mint transaction preparation:
 
@@ -178,6 +183,18 @@ Burn transaction preparation:
 - Rails verifies `NodeNft.owner_address` matches the current user's wallet
 - returned method is `burn`
 - returned args contain `token_id`
+
+Reveal-without-mint behavior:
+
+- Rails accepts reveal only for hidden nodes without an active `NodeNft`
+- reveal changes `private_data_state` to `revealed`
+- revealed nodes are permanently non-mintable and remain tied to the current user account
+
+Demo activation behavior:
+
+- tester users can activate waiting demo nodes through the in-app demo activation path
+- activation is restricted to hidden, exportable, mintable nodes without existing NFT state
+- activation triggers the normal mint-ready notification path
 
 Milestone 3 Sepolia Rails env:
 

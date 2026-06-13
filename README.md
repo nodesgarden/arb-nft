@@ -13,8 +13,8 @@ Current state as of the latest handoff:
 - The Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Target Rails env configuration, live sync, and KPI proof generation are completed: `303` listing-created events and `101` purchase events indexed.
 - Milestone 2 submission package is ready in [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md).
-- Milestone 3 signed mint and burn-to-reveal contract changes are implemented on `feat/milestone-3-contracts`.
-- Milestone 3 Rails mint/burn integration is implemented in `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- Milestone 3 signed mint and burn-to-reveal contract changes are merged into `main`.
+- Milestone 3 Rails mint/burn integration is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - Fresh Milestone 3 contracts are deployed and verified on Arbitrum Sepolia for rehearsal:
   - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
   - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
@@ -93,10 +93,14 @@ Included:
 - Arbitrum Sepolia rehearsal deployment and smoke script
 - Arbitrum mainnet deployment scripts
 - Rails mint/burn dashboard integration in `nodes.garden`
+- project-gated mintability for newly purchased nodes
+- hidden private data for new mintable nodes until NFT mint or explicit reveal
+- post-purchase mint prompt, pending-state explanation, and mint-ready in-app notification
+- tester-only demo activation path for making waiting demo nodes mint-ready
 
 Still pending:
 
-- real browser Sepolia UI smoke across mint, list, buy, and burn
+- real browser Sepolia UI smoke across purchase prompt, demo activation, mint, list, buy, burn, and sync confirmation
 - Arbitrum mainnet deployment
 - production Rails mainnet env configuration
 - controlled cohort onboarding
@@ -174,7 +178,7 @@ The CI workflow uses the standard command path. The offline variant is only a lo
 
 ## Rails Work Completed In `nodes.garden`
 
-The Rails app now has the Milestone 2 marketplace foundation merged into `main` via PR #264:
+The Rails app has the Milestone 2 marketplace foundation merged into `main` via PR #264:
 
 - persisted listings, events, and sync cursor
 - `NodeNft` owner-address sync fields
@@ -183,6 +187,18 @@ The Rails app now has the Milestone 2 marketplace foundation merged into `main` 
 - gated dashboard UI at `/dashboard/marketplace`
 - MetaMask transaction flow for list, cancel, and buy
 - transaction prep/status endpoints under `/dashboard/marketplace`
+
+The Rails app also has the Milestone 3 mint/burn user flow merged into `main` via PRs #265-#270:
+
+- contract-deployment-scoped Node NFT state
+- project-level NFT mintability toggle
+- new mintable node purchases start with hidden private data
+- legacy and relaunched nodes keep existing key visibility behavior
+- dashboard `Mint Node NFT`, `Burn to Reveal Key`, and non-minted `Reveal keys` flows
+- post-purchase NFT prompt for hidden nodes
+- pending explanation while a hidden node is not yet active/exportable
+- in-app notification when a hidden node becomes ready to mint
+- tester-only demo activation service for waiting demo nodes
 
 Recorded verification from the marketplace branch:
 
@@ -206,4 +222,4 @@ forge build
 forge test --offline --no-auto-detect
 ```
 
-Result: `32 tests passed, 0 failed`.
+Result: `39 tests passed, 0 failed`.

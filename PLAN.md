@@ -7,8 +7,8 @@ Current status:
 - Milestone 2 Rails marketplace backend/UI/indexer foundation is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof are completed.
 - Milestone 2 submission package is ready.
-- Milestone 3 contract changes are implemented on branch `feat/milestone-3-contracts`.
-- Milestone 3 Rails integration is implemented on `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- Milestone 3 contract changes are merged into `main`.
+- Milestone 3 Rails integration is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - New Milestone 3 Sepolia contracts are deployed and verified for end-to-end testing before mainnet deployment.
 
 ## Milestone 3 Plan — Mainnet Deployment & Initial User Onboarding
@@ -35,7 +35,7 @@ Implemented in `arb-nft`:
 - Mainnet deployment scripts are prepared.
 - Arbitrum Sepolia smoke script covers mint, marketplace list, cancel, and burn.
 
-Implemented in `nodes.garden` branch `feat/milestone-3-rails`:
+Implemented in `nodes.garden` `main`:
 
 - network-aware Sepolia/mainnet marketplace configuration
 - network-scoped listings, events, cursors, and node NFT records
@@ -45,6 +45,12 @@ Implemented in `nodes.garden` branch `feat/milestone-3-rails`:
 - node data masking before burn reveal, including pending mint state
 - dashboard `Mint Node NFT` and `Burn to Reveal Key` actions
 - chunked RPC log sync to avoid provider log-range limits
+- project-level mintability gating for new node purchases
+- new mintable nodes start with private data hidden; old/relaunched nodes keep legacy key behavior
+- purchase redirect opens the node page with the NFT mint prompt for hidden nodes
+- hidden nodes that are not yet mint-ready still show the NFT card and explain the pending state
+- in-app "NFT is ready to mint" notification after a hidden node becomes active/exportable
+- tester-only demo activation service for making waiting demo nodes mint-ready without real deployment work
 
 Current Sepolia rehearsal deployment:
 
@@ -67,8 +73,10 @@ Sepolia smoke evidence:
 
 Remaining before mainnet:
 
-1. Run a real browser UI smoke against the new Sepolia contracts:
+1. Run a real browser UI smoke against the new Sepolia contracts and merged Rails `main`:
    - purchase or prepare an exportable node
+   - confirm hidden private data and the NFT prompt on the node page
+   - for demo/test nodes, trigger the in-app mint-ready activation path if the node is still waiting
    - mint Node NFT from the node page
    - sync and confirm `NodeMinted`
    - list on marketplace

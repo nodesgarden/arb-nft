@@ -16,8 +16,8 @@ Implementation state:
 - `NodeNFT` is deployed and accepted for Milestone 1.
 - `NodeNFTMarketplace` is implemented, deployed, and verified on Arbitrum Sepolia at `0xEf7c2Cc4c60f4cc7B4C3cC4f69E02C486075CC2A`.
 - Rails marketplace indexing/UI is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
-- Milestone 3 contract changes are implemented on `feat/milestone-3-contracts`.
-- Milestone 3 Rails integration is implemented on `/Users/ilyalebedev/projects/nodes.garden` branch `feat/milestone-3-rails`.
+- Milestone 3 contract changes are merged into `main`.
+- Milestone 3 Rails integration is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - Fresh Milestone 3 Sepolia contracts are deployed and verified:
   - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
   - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
@@ -76,6 +76,8 @@ Effects:
 `mintWithSignature(MintAuthorization authorization, bytes signature)`
 
 Milestone 3 uses this function for user-paid minting from the nodes.garden dashboard after an off-chain purchase has created an exportable node.
+
+Rails only offers this path for newly purchased nodes whose project has NFT minting enabled. Those nodes start with private key and mnemonic fields hidden. The user can mint the node as a transferable NFT, or explicitly reveal keys and keep the node non-transferable.
 
 `MintAuthorization` fields:
 

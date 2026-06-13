@@ -7,8 +7,8 @@
 - Milestone 2 Rails backend/UI/indexer: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PR #264.
 - Milestone 2 target Rails env configuration, live sync, and KPI on-chain proof: completed.
 - Milestone 2 submission package: ready.
-- Milestone 3 contracts: implemented on `feat/milestone-3-contracts`.
-- Milestone 3 Rails integration: implemented on `/Users/ilyalebedev/projects/nodes.garden` `feat/milestone-3-rails`.
+- Milestone 3 contracts: merged into `arb-nft` `main`.
+- Milestone 3 Rails integration: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - Milestone 3 Sepolia rehearsal contracts: deployed, verified, and smoke-tested.
 
 ## Milestone 3 Completed Locally
@@ -30,7 +30,7 @@ In this repo:
 13. [x] Deploy and verify fresh Milestone 3 Sepolia `NodeNFTMarketplace`.
 14. [x] Run Sepolia smoke script successfully.
 
-In `nodes.garden` branch `feat/milestone-3-rails`:
+In `nodes.garden` `main`:
 
 1. [x] Add network-aware Sepolia/mainnet marketplace config.
 2. [x] Scope marketplace listings/events/cursors by network.
@@ -44,11 +44,19 @@ In `nodes.garden` branch `feat/milestone-3-rails`:
 10. [x] Add `Burn to Reveal Key` dashboard action.
 11. [x] Chunk RPC log sync ranges.
 12. [x] Configure local Rails `.env` for Sepolia smoke testing.
+13. [x] Add project-level NFT mintability gating for new node purchases.
+14. [x] Hide key material for newly purchased mintable nodes until NFT mint or explicit reveal.
+15. [x] Prompt hidden nodes to mint as Node NFTs after purchase.
+16. [x] Keep hidden, not-yet-active nodes visible in the NFT card with a pending explanation.
+17. [x] Add in-app mint-ready notifications when hidden nodes become active/exportable.
+18. [x] Add tester-only demo activation for waiting demo nodes to become mint-ready.
+19. [x] Cover stale-instance duplicate notification and unrelated-save performance cases in specs.
 
 Latest verification:
 
 - `arb-nft`: `forge fmt --check`, `forge build`, and `forge test --offline --no-auto-detect` are the required pre-PR checks.
-- `nodes.garden`: targeted RSpec for marketplace/NFT changes passed with `36 examples, 0 failures`.
+- `nodes.garden`: full RSpec for PR #270 passed with `516 examples, 0 failures, 3 pending`.
+- `nodes.garden`: PR #270 GitHub checks passed for `rspec` and `rubocop`.
 - `nodes.garden`: `npm run build` passed.
 - `nodes.garden`: local Rails sync against Sepolia indexed smoke events after chunked log sync.
 
@@ -78,7 +86,7 @@ Smoke transaction sequence:
 
 ## Milestone 3 Remaining
 
-1. [ ] Run real browser UI smoke on Sepolia from `nodes.garden`.
+1. [ ] Run real browser UI smoke on Sepolia from merged `nodes.garden` `main`, including purchase prompt, demo mint-ready activation, mint, list, buy, burn, and sync confirmation.
 2. [ ] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
 3. [ ] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
 4. [ ] Configure production Rails mainnet env.
