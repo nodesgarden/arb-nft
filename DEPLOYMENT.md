@@ -43,6 +43,18 @@ Milestone 3 Sepolia rehearsal contracts:
 - `NodeNFTMarketplace` constructor `NFT_CONTRACT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
 - `NodeNFTMarketplace` explorer: `https://sepolia.arbiscan.io/address/0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0#code`
 
+Milestone 3 browser UI smoke:
+
+- Rails node id: `25822`
+- project: `Dria`
+- NFT token id: `4`
+- marketplace listing id: `2`
+- mint tx: `0x1fa3e5c8f64fa75cf749d54ec3dd81e44fca2b78e1a5b5af6c8b7d7710a93019`
+- list tx: `0xa0849d8e4888cf134d5460a190e32f72c1757c843b1f5faaa77dfb5641c973c6`
+- purchase tx: `0x2ec3f1f3c820ce8db917cc266eba27f35de6ddcdb69332476e05e0046d32b06c`
+- burn/reveal tx: `0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
+- detailed evidence: [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md)
+
 ## Required Environment Variables
 
 Contract constructor inputs:

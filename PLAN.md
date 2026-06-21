@@ -10,6 +10,7 @@ Current status:
 - Milestone 3 contract changes are merged into `main`.
 - Milestone 3 Rails integration is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - New Milestone 3 Sepolia contracts are deployed and verified for end-to-end testing before mainnet deployment.
+- Real browser Sepolia UI smoke is completed through purchase, demo activation, mint, list, buy, burn, and sync confirmation.
 
 ## Milestone 3 Plan — Mainnet Deployment & Initial User Onboarding
 
@@ -73,21 +74,22 @@ Sepolia smoke evidence:
 
 Remaining before mainnet:
 
-1. Run a real browser UI smoke against the new Sepolia contracts and merged Rails `main`:
-   - purchase or prepare an exportable node
-   - confirm hidden private data and the NFT prompt on the node page
-   - for demo/test nodes, trigger the in-app mint-ready activation path if the node is still waiting
-   - mint Node NFT from the node page
-   - sync and confirm `NodeMinted`
-   - list on marketplace
-   - buy from another wallet
-   - sync and confirm Rails node ownership transfer
-   - burn to reveal keys
-   - sync and confirm `keys_revealed`
-2. Deploy `NodeNFT` and `NodeNFTMarketplace` to Arbitrum mainnet.
-3. Configure production Rails mainnet env.
-4. Launch controlled cohort.
-5. Track mainnet KPI progress.
+1. Deploy `NodeNFT` and `NodeNFTMarketplace` to Arbitrum mainnet.
+2. Configure production Rails mainnet env.
+3. Launch controlled cohort.
+4. Track mainnet KPI progress.
+
+Completed real browser Sepolia UI smoke:
+
+- Rails node id: `25822`
+- project: `Dria`
+- NFT token id: `4`
+- listing id: `2`
+- mint tx: `0x1fa3e5c8f64fa75cf749d54ec3dd81e44fca2b78e1a5b5af6c8b7d7710a93019`
+- list tx: `0xa0849d8e4888cf134d5460a190e32f72c1757c843b1f5faaa77dfb5641c973c6`
+- purchase tx: `0x2ec3f1f3c820ce8db917cc266eba27f35de6ddcdb69332476e05e0046d32b06c`
+- burn/reveal tx: `0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
+- evidence package: [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md)
 
 ## Milestone 2 Resume Plan — Testnet Node NFT Marketplace
 

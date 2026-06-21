@@ -18,6 +18,8 @@ Current state as of the latest handoff:
 - Fresh Milestone 3 contracts are deployed and verified on Arbitrum Sepolia for rehearsal:
   - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
   - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
+- Milestone 3 real browser Sepolia UI smoke is completed for Dria node `25822` / NFT `#4`.
+- Milestone 3 evidence package is ready in [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md).
 
 ## Contract Model
 
@@ -100,7 +102,6 @@ Included:
 
 Still pending:
 
-- real browser Sepolia UI smoke across purchase prompt, demo activation, mint, list, buy, burn, and sync confirmation
 - Arbitrum mainnet deployment
 - production Rails mainnet env configuration
 - controlled cohort onboarding
@@ -114,6 +115,8 @@ Still pending:
 - [MILESTONE_1_EVIDENCE.md](MILESTONE_1_EVIDENCE.md) records deployment and milestone proof
 - [MILESTONE_2_EVIDENCE.md](MILESTONE_2_EVIDENCE.md) records marketplace deployment proof and KPI evidence
 - [MILESTONE_2_SUBMISSION.md](MILESTONE_2_SUBMISSION.md) is the reviewer-facing Milestone 2 summary
+- [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md) records Sepolia Milestone 3 deployment and browser smoke proof
+- [MILESTONE_3_SUBMISSION.md](MILESTONE_3_SUBMISSION.md) is the reviewer-facing Milestone 3 draft
 - [PROGRESS.md](PROGRESS.md) is the current handoff checklist
 
 ## Operational Scripts

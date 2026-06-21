@@ -10,6 +10,8 @@
 - Milestone 3 contracts: merged into `arb-nft` `main`.
 - Milestone 3 Rails integration: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - Milestone 3 Sepolia rehearsal contracts: deployed, verified, and smoke-tested.
+- Milestone 3 real browser Sepolia UI smoke: completed end to end with Dria node `25822` / NFT `#4`.
+- Milestone 3 evidence package: ready in [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md).
 
 ## Milestone 3 Completed Locally
 
@@ -51,6 +53,7 @@ In `nodes.garden` `main`:
 17. [x] Add in-app mint-ready notifications when hidden nodes become active/exportable.
 18. [x] Add tester-only demo activation for waiting demo nodes to become mint-ready.
 19. [x] Cover stale-instance duplicate notification and unrelated-save performance cases in specs.
+20. [x] Run real browser Sepolia UI smoke through purchase, demo activation, mint, list, buy, burn, and sync confirmation.
 
 Latest verification:
 
@@ -84,15 +87,28 @@ Smoke transaction sequence:
 - cancel listing: `0x59d13834f7de5dcaeeadbd38d763dd16f38f4c9237a2bb04ecacc51f1a39ad6f`
 - burn: `0x983eb977dfe3e3470285641197563c6437671f6088fa0c05eb60f21a781ee0e1`
 
+Real browser UI smoke:
+
+- Rails node id: `25822`
+- project: `Dria`
+- NFT token id: `4`
+- listing id: `2`
+- seller: `0x03a6948018941a8650c08145abba2f25cc79e32c`
+- buyer/final owner: `0xa3f00f3a194cdb68bea9082ca55c10a06b72e314`
+- mint tx: `0x1fa3e5c8f64fa75cf749d54ec3dd81e44fca2b78e1a5b5af6c8b7d7710a93019`
+- list tx: `0xa0849d8e4888cf134d5460a190e32f72c1757c843b1f5faaa77dfb5641c973c6`
+- purchase tx: `0x2ec3f1f3c820ce8db917cc266eba27f35de6ddcdb69332476e05e0046d32b06c`
+- burn/reveal tx: `0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
+- evidence: [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md)
+
 ## Milestone 3 Remaining
 
-1. [ ] Run real browser UI smoke on Sepolia from merged `nodes.garden` `main`, including purchase prompt, demo mint-ready activation, mint, list, buy, burn, and sync confirmation.
-2. [ ] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
-3. [ ] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
-4. [ ] Configure production Rails mainnet env.
-5. [ ] Enable controlled user cohort.
-6. [ ] Track KPI counts for `>=300` mints, `>=100` trades, and `>=200` contract-interacting MAUs.
-7. [ ] Coordinate public launch announcement with Arbitrum.
+1. [ ] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
+2. [ ] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
+3. [ ] Configure production Rails mainnet env.
+4. [ ] Enable controlled user cohort.
+5. [ ] Track KPI counts for `>=300` mints, `>=100` trades, and `>=200` contract-interacting MAUs.
+6. [ ] Coordinate public launch announcement with Arbitrum.
 
 ## Milestone 2 Completed Locally
 
