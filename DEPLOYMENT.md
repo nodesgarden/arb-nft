@@ -69,6 +69,14 @@ Milestone 3 mainnet contracts:
 - `NodeNFTMarketplace` constructor `NFT_CONTRACT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
 - `NodeNFTMarketplace` explorer: `https://arbiscan.io/address/0x410b0037436d0b8468e1295dCbF3D86882ed6d7a#code`
 
+Production Rails mainnet switch:
+
+- `NFT_MARKETPLACE_NETWORK=arbitrum_mainnet`
+- active chain id: `42161`
+- active `NodeNFT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- active `NodeNFTMarketplace`: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- mainnet sync cursors initialized through block `476089311`
+
 ## Required Environment Variables
 
 Contract constructor inputs:

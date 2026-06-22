@@ -2,7 +2,7 @@
 
 Hi @Chilla, here is our Milestone 3 update:
 
-We implemented the mainnet launch flow for nodes.garden Node NFTs, completed the Arbitrum Sepolia rehearsal end to end, and deployed the contracts on Arbitrum mainnet.
+We implemented the mainnet launch flow for nodes.garden Node NFTs, completed the Arbitrum Sepolia rehearsal end to end, deployed the contracts on Arbitrum mainnet, and switched production Rails to the mainnet contract configuration.
 
 What shipped:
 
@@ -29,6 +29,7 @@ Sepolia rehearsal:
 - Arbitrum mainnet contracts deployed and verified:
   - NodeNFT: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
   - Marketplace: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- Production Rails is configured for `arbitrum_mainnet` with sync cursors initialized.
 
 Links:
 
@@ -46,4 +47,4 @@ Representative UI smoke transactions:
 - purchase: `https://sepolia.arbiscan.io/tx/0x2ec3f1f3c820ce8db917cc266eba27f35de6ddcdb69332476e05e0046d32b06c`
 - burn/reveal: `https://sepolia.arbiscan.io/tx/0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
 
-Next step is production mainnet Rails configuration and controlled cohort onboarding.
+Next step is controlled real mainnet smoke and cohort onboarding.

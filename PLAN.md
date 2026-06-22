@@ -12,6 +12,8 @@ Current status:
 - New Milestone 3 Sepolia contracts are deployed and verified for end-to-end testing before mainnet deployment.
 - Real browser Sepolia UI smoke is completed through purchase, demo activation, mint, list, buy, burn, and sync confirmation.
 - Arbitrum mainnet `NodeNFT` and `NodeNFTMarketplace` contracts are deployed and verified.
+- Production Rails is switched to `NFT_MARKETPLACE_NETWORK=arbitrum_mainnet`.
+- Mainnet marketplace sync cursors are initialized.
 
 ## Milestone 3 Plan — Mainnet Deployment & Initial User Onboarding
 
@@ -73,9 +75,9 @@ Sepolia smoke evidence:
 - cancel tx: `0x59d13834f7de5dcaeeadbd38d763dd16f38f4c9237a2bb04ecacc51f1a39ad6f`
 - burn tx: `0x983eb977dfe3e3470285641197563c6437671f6088fa0c05eb60f21a781ee0e1`
 
-Remaining before mainnet:
+Remaining for launch:
 
-1. Configure production Rails mainnet env and switch `NFT_MARKETPLACE_NETWORK` when ready.
+1. Run controlled real mainnet smoke with one eligible purchased node.
 2. Launch controlled cohort.
 3. Track mainnet KPI progress.
 
@@ -85,6 +87,8 @@ Completed mainnet deployment:
 - `NodeNFT` deployment tx: `0x04d284fccc8f75fe103499c159c9228b235679b85a4c075fd354da8702b2bda1`
 - `NodeNFTMarketplace`: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
 - `NodeNFTMarketplace` deployment tx: `0x7995bfcc8f38ed5aad027c171c6aa0bafae23c867919fe15a5a004b81795b863`
+- production active network: `arbitrum_mainnet`
+- production sync cursor initialized through block `476089311`
 
 Completed real browser Sepolia UI smoke:
 
