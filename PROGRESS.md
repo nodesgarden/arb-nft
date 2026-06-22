@@ -11,6 +11,7 @@
 - Milestone 3 Rails integration: merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - Milestone 3 Sepolia rehearsal contracts: deployed, verified, and smoke-tested.
 - Milestone 3 real browser Sepolia UI smoke: completed end to end with Dria node `25822` / NFT `#4`.
+- Milestone 3 Arbitrum mainnet contracts: deployed and verified.
 - Milestone 3 evidence package: ready in [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md).
 
 ## Milestone 3 Completed Locally
@@ -103,12 +104,28 @@ Real browser UI smoke:
 
 ## Milestone 3 Remaining
 
-1. [ ] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
-2. [ ] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
-3. [ ] Configure production Rails mainnet env.
+1. [x] Deploy Milestone 3 `NodeNFT` to Arbitrum mainnet.
+2. [x] Deploy Milestone 3 `NodeNFTMarketplace` to Arbitrum mainnet.
+3. [ ] Configure production Rails mainnet env and switch `NFT_MARKETPLACE_NETWORK` when ready.
 4. [ ] Enable controlled user cohort.
 5. [ ] Track KPI counts for `>=300` mints, `>=100` trades, and `>=200` contract-interacting MAUs.
 6. [ ] Coordinate public launch announcement with Arbitrum.
+
+## Milestone 3 Mainnet Deployment Evidence
+
+`NodeNFT`:
+
+- address: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- deployment tx: `0x04d284fccc8f75fe103499c159c9228b235679b85a4c075fd354da8702b2bda1`
+- deployment block: `476087135`
+- explorer: `https://arbiscan.io/address/0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f#code`
+
+`NodeNFTMarketplace`:
+
+- address: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- deployment tx: `0x7995bfcc8f38ed5aad027c171c6aa0bafae23c867919fe15a5a004b81795b863`
+- deployment block: `476087478`
+- explorer: `https://arbiscan.io/address/0x410b0037436d0b8468e1295dCbF3D86882ed6d7a#code`
 
 ## Milestone 2 Completed Locally
 

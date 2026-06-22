@@ -2,7 +2,7 @@
 
 Hi @Chilla, here is our Milestone 3 update:
 
-We implemented the mainnet launch flow for nodes.garden Node NFTs and completed the Arbitrum Sepolia rehearsal end to end.
+We implemented the mainnet launch flow for nodes.garden Node NFTs, completed the Arbitrum Sepolia rehearsal end to end, and deployed the contracts on Arbitrum mainnet.
 
 What shipped:
 
@@ -26,12 +26,17 @@ Sepolia rehearsal:
   - purchase from another user/wallet
   - verify backend ownership transfer
   - burn NFT and reveal keys
+- Arbitrum mainnet contracts deployed and verified:
+  - NodeNFT: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+  - Marketplace: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
 
 Links:
 
 - Repo: `https://github.com/nodesgarden/arb-nft`
 - NodeNFT: `https://sepolia.arbiscan.io/address/0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F#code`
 - Marketplace: `https://sepolia.arbiscan.io/address/0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0#code`
+- Mainnet NodeNFT: `https://arbiscan.io/address/0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f#code`
+- Mainnet marketplace: `https://arbiscan.io/address/0x410b0037436d0b8468e1295dCbF3D86882ed6d7a#code`
 - Milestone evidence: `https://github.com/nodesgarden/arb-nft/blob/main/MILESTONE_3_EVIDENCE.md`
 
 Representative UI smoke transactions:
@@ -41,4 +46,4 @@ Representative UI smoke transactions:
 - purchase: `https://sepolia.arbiscan.io/tx/0x2ec3f1f3c820ce8db917cc266eba27f35de6ddcdb69332476e05e0046d32b06c`
 - burn/reveal: `https://sepolia.arbiscan.io/tx/0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
 
-Next step is Arbitrum mainnet deployment and controlled cohort onboarding.
+Next step is production mainnet Rails configuration and controlled cohort onboarding.

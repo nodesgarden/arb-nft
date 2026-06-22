@@ -19,6 +19,9 @@ Current state as of the latest handoff:
   - `NodeNFT`: `0xC31a939521Da80b4C3A9B47C863d66d9F3E9563F`
   - `NodeNFTMarketplace`: `0x1fD2d84E36cc2F3EDcb2d8d603602db0982eB7E0`
 - Milestone 3 real browser Sepolia UI smoke is completed for Dria node `25822` / NFT `#4`.
+- Milestone 3 contracts are deployed and verified on Arbitrum mainnet:
+  - `NodeNFT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+  - `NodeNFTMarketplace`: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
 - Milestone 3 evidence package is ready in [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md).
 
 ## Contract Model
@@ -102,8 +105,7 @@ Included:
 
 Still pending:
 
-- Arbitrum mainnet deployment
-- production Rails mainnet env configuration
+- production Rails mainnet env switch
 - controlled cohort onboarding
 - KPI tracking for mints, trades, and contract-interacting MAUs
 

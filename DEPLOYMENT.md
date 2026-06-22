@@ -55,6 +55,20 @@ Milestone 3 browser UI smoke:
 - burn/reveal tx: `0x4cf1587f18cad071b5e8b9225cba82787269a4ecac53d8b04de20cf2569bfb44`
 - detailed evidence: [MILESTONE_3_EVIDENCE.md](MILESTONE_3_EVIDENCE.md)
 
+Milestone 3 mainnet contracts:
+
+- network: `Arbitrum`
+- chain id: `42161`
+- `NodeNFT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- `NodeNFT` deployment tx: `0x04d284fccc8f75fe103499c159c9228b235679b85a4c075fd354da8702b2bda1`
+- `NodeNFT` deployment block: `476087135`
+- `NodeNFT` explorer: `https://arbiscan.io/address/0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f#code`
+- `NodeNFTMarketplace`: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- `NodeNFTMarketplace` deployment tx: `0x7995bfcc8f38ed5aad027c171c6aa0bafae23c867919fe15a5a004b81795b863`
+- `NodeNFTMarketplace` deployment block: `476087478`
+- `NodeNFTMarketplace` constructor `NFT_CONTRACT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- `NodeNFTMarketplace` explorer: `https://arbiscan.io/address/0x410b0037436d0b8468e1295dCbF3D86882ed6d7a#code`
+
 ## Required Environment Variables
 
 Contract constructor inputs:

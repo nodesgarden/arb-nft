@@ -11,6 +11,7 @@ Current status:
 - Milestone 3 Rails integration is merged into `/Users/ilyalebedev/projects/nodes.garden` `main` via PRs #265-#270.
 - New Milestone 3 Sepolia contracts are deployed and verified for end-to-end testing before mainnet deployment.
 - Real browser Sepolia UI smoke is completed through purchase, demo activation, mint, list, buy, burn, and sync confirmation.
+- Arbitrum mainnet `NodeNFT` and `NodeNFTMarketplace` contracts are deployed and verified.
 
 ## Milestone 3 Plan — Mainnet Deployment & Initial User Onboarding
 
@@ -74,10 +75,16 @@ Sepolia smoke evidence:
 
 Remaining before mainnet:
 
-1. Deploy `NodeNFT` and `NodeNFTMarketplace` to Arbitrum mainnet.
-2. Configure production Rails mainnet env.
-3. Launch controlled cohort.
-4. Track mainnet KPI progress.
+1. Configure production Rails mainnet env and switch `NFT_MARKETPLACE_NETWORK` when ready.
+2. Launch controlled cohort.
+3. Track mainnet KPI progress.
+
+Completed mainnet deployment:
+
+- `NodeNFT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- `NodeNFT` deployment tx: `0x04d284fccc8f75fe103499c159c9228b235679b85a4c075fd354da8702b2bda1`
+- `NodeNFTMarketplace`: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- `NodeNFTMarketplace` deployment tx: `0x7995bfcc8f38ed5aad027c171c6aa0bafae23c867919fe15a5a004b81795b863`
 
 Completed real browser Sepolia UI smoke:
 

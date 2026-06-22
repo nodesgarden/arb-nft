@@ -1,6 +1,6 @@
 # Milestone 3 Evidence — Sepolia Rehearsal
 
-Status: Milestone 3 contracts and Rails integration are implemented, deployed to Arbitrum Sepolia, and smoke-tested through the real nodes.garden browser flow.
+Status: Milestone 3 contracts and Rails integration are implemented, deployed to Arbitrum Sepolia, smoke-tested through the real nodes.garden browser flow, and deployed to Arbitrum mainnet.
 
 Milestone 3 scope:
 
@@ -111,4 +111,21 @@ forge test --offline --no-auto-detect
 
 ## Mainnet Readiness
 
-Sepolia rehearsal is complete. Remaining Milestone 3 work is mainnet deployment, production mainnet Rails configuration, controlled cohort launch, KPI tracking, and coordinated public announcement with Arbitrum.
+Sepolia rehearsal is complete and Arbitrum mainnet contracts are deployed.
+
+Mainnet `NodeNFT`:
+
+- address: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- deployment tx: `0x04d284fccc8f75fe103499c159c9228b235679b85a4c075fd354da8702b2bda1`
+- deployment block: `476087135`
+- explorer: `https://arbiscan.io/address/0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f#code`
+
+Mainnet `NodeNFTMarketplace`:
+
+- address: `0x410b0037436d0b8468e1295dCbF3D86882ed6d7a`
+- deployment tx: `0x7995bfcc8f38ed5aad027c171c6aa0bafae23c867919fe15a5a004b81795b863`
+- deployment block: `476087478`
+- constructor `NFT_CONTRACT`: `0x1fc8184a57bD61eAC3dFBE53D8B2712195C9926f`
+- explorer: `https://arbiscan.io/address/0x410b0037436d0b8468e1295dCbF3D86882ed6d7a#code`
+
+Remaining Milestone 3 work is production mainnet Rails configuration, controlled cohort launch, KPI tracking, and coordinated public announcement with Arbitrum.
